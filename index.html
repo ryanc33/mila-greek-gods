@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demeter’s Big Feast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: warm, silly storybook quest made for one 7-year-old
+   IDEA: a painted Olympus picture book with a gold Greek-key trim
+   PICTURE: Mila, Ruby, Ligaia and Nieka as goddesses; the climb up Mount Olympus; a steam basket of dumpling pets
+   COLOUR and TYPE: Aegean blue, marble white, harvest gold; Andika (a plain print font made for new readers), never cursive
+   LAYOUT: one big card per question, three huge word buttons, characters beside it; stacks on narrow screens */
+:root{color-scheme:light;--ink:#1d2742;--blue:#1f6fb5;--blue2:#154f82;--gold:#f2b631;--gold2:#ffe28a;--marble:#fffaf0;--leaf:#5fae4e;
+ --font:'Andika','Lexend','Verdana','Arial',sans-serif}
+*{box-sizing:border-box;min-width:0}
+html,body{min-height:100%}
+body{margin:0;font:400 20px/1.4 var(--font);color:var(--ink);background:#bfe6ff;overflow-x:clip;-webkit-tap-highlight-color:transparent;transition:background .4s}
+button{font-family:var(--font);color:var(--ink);cursor:pointer;-webkit-user-select:none;user-select:none}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+h1,h2{margin:0;line-height:1.08;text-wrap:balance}
+.key{height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='16'%3E%3Cpath d='M0 14H24M2 14V2H18V10H8V6H14' fill='none' stroke='%23f2b631' stroke-width='2.4'/%3E%3C/svg%3E") repeat-x;opacity:.9}
+.big{font-size:clamp(24px,3.4vw,32px);font-weight:700;min-height:68px;padding:10px 28px;border-radius:999px;border:4px solid var(--blue);background:#fff;box-shadow:0 6px 0 var(--blue2)}
+.big.gold{background:var(--gold);border-color:#c98e12;box-shadow:0 6px 0 #a87510}
+.big:active{transform:translateY(3px);box-shadow:0 3px 0 var(--blue2)}
+.count{font-size:.75em;background:var(--gold2);border-radius:999px;padding:2px 10px;margin-left:6px}
+/* home */
+.home{max-width:1100px;margin:auto;padding:12px 16px 90px;text-align:center}
+.home h1{font-size:clamp(40px,7vw,64px);color:var(--blue2);margin-top:18px}
+.sub{font-size:22px;margin:6px 0 4px}
+.castrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 18px}
+.castrow figure{margin:0;background:rgba(255,250,240,.75);border-radius:26px;padding:10px 6px}
+.castrow svg{width:100%;max-height:230px}
+.castrow figcaption{font-size:clamp(17px,2.4vw,22px)}
+.homebtns{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.gear{position:fixed;right:12px;bottom:12px;font-size:15px;border:0;border-radius:999px;padding:10px 14px;background:rgba(255,255,255,.6)}
+.gear.holding{background:var(--gold2)}
+.hint{position:fixed;right:12px;bottom:60px;background:#fff;border-radius:14px;padding:8px 12px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.testtag{display:inline-block;background:#ffd6d6;border-radius:999px;padding:2px 14px;font-size:16px}
+@media(max-width:620px){.castrow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* bar */
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap}
+.pill{font-size:18px;font-weight:700;border:0;border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.88);min-height:44px;display:flex;align-items:center;gap:6px}
+.pill.title{flex:1 1 auto;justify-content:center}
+.seeds{gap:4px}
+.seed{width:15px;height:21px;border-radius:50%/60% 60% 40% 40%;background:rgba(0,0,0,.13);transition:background .3s,transform .3s}
+.seed.on{background:#e9b937;transform:scale(1.15)}
+/* map */
+.map{position:relative;max-width:760px;margin:0 auto 40px;border-radius:30px;overflow:hidden;background:linear-gradient(#fff6dc,#cdeaff 22%,#bfe6ff 55%,#a8dc8a)}
+.map>svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;width:150px}
+.node .num{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:32px;font-weight:700;background:#fff;border:5px solid var(--blue);box-shadow:0 6px 0 var(--blue2)}
+.node .lbl{font-size:16px;font-weight:700;background:rgba(255,250,240,.92);border-radius:12px;padding:2px 10px;line-height:1.2}
+.node.done .num{background:var(--gold);border-color:#c98e12;box-shadow:0 6px 0 #a87510}
+.node.now .num{animation:pulse 1.4s ease-in-out infinite}
+.node:disabled{cursor:default}.node:disabled .num{background:#e7e9ee;border-color:#b8bfcc;box-shadow:0 6px 0 #9aa3b2;color:#9aa3b2}
+.node:disabled .lbl{opacity:.6}
+@keyframes pulse{50%{transform:scale(1.1)}}
+/* story */
+.story{max-width:940px;margin:auto;padding:8px 16px 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:calc(100vh - 110px)}
+.stage{display:flex;gap:4px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
+.stage svg{height:clamp(150px,30vh,250px);width:auto;animation:hop .6s ease-out both}
+.stage svg:nth-child(2){animation-delay:.12s}.stage svg:nth-child(3){animation-delay:.24s}.stage svg:nth-child(4){animation-delay:.36s}
+@keyframes hop{from{transform:translateY(30px);opacity:0}}
+.tale{background:var(--marble);border-radius:26px;padding:22px 28px;font-size:clamp(26px,3.7vw,36px);font-weight:700;line-height:1.5;max-width:860px;box-shadow:0 8px 24px rgba(0,0,0,.12);text-align:center;margin:0}
+.tale.small{font-size:clamp(22px,3vw,30px)}
+/* play */
+.play{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:16px;max-width:1120px;margin:0 auto;padding:4px 16px 30px;align-items:start;align-content:center;min-height:calc(100vh - 110px)}
+.side{display:flex;flex-direction:column;align-items:center;gap:8px;position:sticky;top:8px}
+.duo{display:flex;align-items:flex-end}.duo svg{width:50%;height:auto}
+.duo svg:first-child{width:56%}
+.bubble{background:#fff;border-radius:18px;padding:10px 14px;font-size:20px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.12);min-height:52px;width:100%}
+.card{background:var(--marble);border-radius:30px;padding:18px 20px 22px;box-shadow:0 10px 30px rgba(0,0,0,.14);text-align:center}
+.prompt{font-size:22px;margin:0 0 6px;color:#4a5677}
+.cue-pic{font-size:clamp(88px,16vw,150px);line-height:1.15;margin:4px 0}
+.cue-sent{font-size:clamp(28px,4.5vw,42px);font-weight:700;line-height:1.4;margin:18px 4px 10px}
+.blank{display:inline-block;min-width:3.4em;border-bottom:5px solid var(--blue);line-height:1.1;transition:background .3s}
+.blank.filled{background:var(--gold2);border-radius:10px 10px 0 0;padding:0 .15em}
+.again{display:inline-block;background:#e7f2ff;border-radius:999px;padding:2px 14px;font-size:18px;margin-bottom:4px}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.opt{position:relative;font-weight:700;font-size:clamp(30px,5vw,48px);letter-spacing:.03em;min-height:96px;padding:6px;border-radius:24px;border:4px solid var(--blue);background:#fff;box-shadow:0 6px 0 var(--blue2);transition:opacity .3s,background .2s}
+.opt:active{transform:translateY(3px);box-shadow:0 3px 0 var(--blue2)}
+.opt .dot{color:#9aa7c2;margin:0 .05em}
+.opt.out{opacity:.3;border-color:#b8bfcc;box-shadow:0 6px 0 #9aa3b2;animation:wob .4s}
+.opt.yes{background:var(--gold2);border-color:#c98e12;box-shadow:0 6px 0 #a87510;animation:pop .5s}
+.opt.glow{animation:glow 1.2s ease-in-out infinite}
+@keyframes wob{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{40%{transform:scale(1.1)}}
+@keyframes glow{50%{box-shadow:0 0 0 10px rgba(242,182,49,.55),0 6px 0 var(--blue2)}}
+.spark{position:fixed;pointer-events:none;font-size:30px;animation:fly .9s ease-out forwards;z-index:9}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) scale(.4);opacity:0}}
+@media(max-width:760px){.play{grid-template-columns:1fr}.side{position:static;flex-direction:row-reverse}.duo{width:150px;flex:none}.bubble{flex:1}}
+@media(max-width:560px){.opts{grid-template-columns:1fr}.opt{min-height:78px}}
+/* pets */
+.reveal{position:relative;width:min(320px,80vw);margin:10px auto 0;height:300px}
+.reveal .steamer{position:absolute;bottom:0;left:0;width:100%}
+.reveal .lid{animation:lid 1.2s ease-out .3s forwards}
+@keyframes lid{40%{transform:translate(-10px,-40px) rotate(-14deg)}100%{transform:translate(-60px,40px) rotate(-30deg);opacity:0}}
+.reveal .pop{position:absolute;left:50%;bottom:70px;width:62%;transform:translateX(-50%) scale(.2);opacity:0;animation:rise .9s cubic-bezier(.3,1.6,.5,1) 1s forwards}
+@keyframes rise{to{transform:translateX(-50%) translateY(-60px) scale(1);opacity:1}}
+.puff{position:absolute;bottom:110px;width:46px;height:46px;border-radius:50%;background:#fff;opacity:0;animation:steam 2s ease-out .4s 2}
+.puff:nth-of-type(2){left:30%;animation-delay:.7s}.puff:nth-of-type(3){left:55%;animation-delay:1s}.puff:nth-of-type(4){left:42%;animation-delay:1.3s}
+@keyframes steam{20%{opacity:.85}100%{transform:translateY(-150px) scale(2);opacity:0}}
+.petgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;max-width:1000px;margin:0 auto;padding:6px 16px 40px}
+.petcard{background:var(--marble);border:0;border-radius:24px;padding:10px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 6px 16px rgba(0,0,0,.1);font-size:22px}
+.petcard small{font-size:16px;line-height:1.3}
+.petcard svg{width:100%;max-width:150px}
+.petcard.locked{background:rgba(255,250,240,.5);box-shadow:none}
+.ghost{filter:brightness(0);opacity:.14}
+.petcard.boing svg{animation:pop .5s}
+.pethead{text-align:center;padding:4px 16px}
+.pethead h1{font-size:clamp(34px,6vw,52px);color:var(--blue2)}
+/* grown-ups */
+.sheet{max-width:860px;margin:16px auto 60px;background:#fff;border-radius:24px;padding:20px 22px;box-shadow:0 10px 30px rgba(0,0,0,.15);font-size:17px}
+.sheet h2{font-size:30px;margin-bottom:6px}.sheet h3{font-size:20px;margin:22px 0 6px}
+.sheet table{width:100%;border-collapse:collapse;font-size:16px}
+.sheet td,.sheet th{padding:6px 8px;border-bottom:1px solid #e5e8ef;text-align:left}
+.sheet td.n,.sheet th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sheet .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sheet button.s{font-size:16px;min-height:44px;padding:6px 16px;border-radius:12px;border:2px solid var(--blue);background:#fff}
+.sheet button.s.on{background:var(--blue);color:#fff}
+.sheet button.s.warn{border-color:#c0392b;color:#c0392b}
+.sheet textarea{width:100%;height:120px;font:13px/1.3 ui-monospace,Menlo,Consolas,monospace;border-radius:10px;border:1px solid #ccd;padding:8px}
+.sheet input{font:16px var(--font);padding:8px;border-radius:10px;border:1px solid #ccd;width:110px}
+.muted{color:#5d6680}
+.bar2{height:10px;border-radius:5px;background:#e8ebf2;overflow:hidden;min-width:80px}.bar2>i{display:block;height:100%;background:var(--leaf)}
+.pinwrap{max-width:360px;margin:30px auto;background:#fff;border-radius:24px;padding:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.pindots{display:flex;gap:12px;justify-content:center;margin:12px 0}
+.pindots i{width:20px;height:20px;border-radius:50%;border:2px solid var(--blue)}.pindots i.f{background:var(--blue)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pad button{font-size:26px;min-height:60px;border-radius:14px;border:2px solid #cfd6e4;background:#f7f9fc}
+.pinwrap.bad{animation:wob .4s}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="key"></div>
+<main id="app"></main>
+<script>
+{
+/* ---------------- content ---------------- */
+const CAST={
+ demeter:{name:'Demeter',kid:'Mila',skin:'#d9a27a',hair:'#3a2216',style:'braid',dress:'#5fae4e',trim:'#f2c94c',crown:'wheat',prop:'wheat'},
+ hebe:{name:'Hebe',kid:'Ruby',skin:'#d9a27a',hair:'#3a2216',style:'pigtails',dress:'#f48fb1',trim:'#fff1a8',crown:'flowers',prop:'cup',small:1},
+ artemis:{name:'Artemis',kid:'Ligaia',skin:'#e9b98f',hair:'#1d1a2b',style:'pony',dress:'#7e6bd6',trim:'#dfe6f5',crown:'moon',prop:'bow'},
+ aphrodite:{name:'Aphrodite',kid:'Nieka',skin:'#b97a52',hair:'#4a2a1a',style:'long',dress:'#3fb8c0',trim:'#ffc2d4',crown:'rose',prop:'shell'},
+ zeus:{name:'Zeus',skin:'#e5b58d',hair:'#f1f1f1',style:'zeus',dress:'#3f7fd6',trim:'#f2c94c',crown:'laurel',prop:'bolt'}
+};
+const P=(w,t)=>({w,t});
+const LEVELS=[
+ {id:'garden',name:'Demeter’s Garden',short:'Garden',host:'demeter',ptype:'spell',skill:'Long a: a_e, ai, ay',bg:'linear-gradient(#e6f8d4,#a9dc8c)',
+  intro:[P(['zeus'],'Zeus is having a big feast on Mount Olympus. He asked Demeter to grow all the food.'),
+   P(['demeter'],'“Let’s Grow!” said Demeter. She held up her bag of magic seeds.'),
+   P(['demeter','hebe'],'Then a big gust of wind came. Whoosh! The seeds blew all over the land.'),
+   P(['hebe'],'“Oh no!” said Hebe. “We must get the seeds back. I will bring my magic steam basket!”'),
+   P(['hebe','demeter'],'Each time you finish a land, a dumpling pet will hop out of the basket. Let’s go!')],
+  mid:[P(['hebe','demeter'],'Hebe fell in a big pile of hay. “Look! I am a hay monster!” she said. Demeter laughed and laughed.')],
+  end:[P(['demeter','hebe'],'Demeter found the seeds in the garden. Then the steam basket began to shake...')],
+  items:['🌧️|rain|rane|rayn','🐌|snail|snale|snayl','🚂|train|trane|trayn','🎂|cake|caik|cayk','🌊|wave|waiv|wayv','🍇|grapes|graips|grayps','🍽️|plate|playt|plat','🐍|snake|snaik|snak','🔥|flame|flaim|flam','☀️|day|dai|dae','🎨|paint|paynt|pant','💌|mail|mayl|mal','🌈|rainbow|ranebow|raynbow','🏞️|lake|laik|layk']},
+ {id:'woods',name:'Artemis’s Moon Woods',short:'Moon Woods',host:'artemis',ptype:'sent',skill:'T or W look-alikes (that/what, then/when)',bg:'linear-gradient(#3b4a86,#7a68b0)',
+  intro:[P(['artemis'],'Some seeds blew into the dark woods. Artemis lives in the woods. She has a bow and a silver moon.'),
+   P(['artemis','demeter'],'“I can help!” said Artemis. “My deer can sniff out the seeds.”')],
+  mid:[P(['hebe'],'An owl said, “Hoo!” Hebe jumped so high, she hit a branch. “Who said that?” she asked.')],
+  end:[P(['artemis','demeter'],'The deer found the seeds under a big tree. Artemis smiled up at the moon.')],
+  items:['_ is your name?|What|That|Wheat','Look at _ big deer!|that|what|wheat','_ is lunch?|When|Then|Hen','First we hop, _ we spin.|then|when|ten','Artemis has _ bows.|two|who|tow','_ ate my cake?|Who|Two|How','I _ to see the moon.|want|what|that','_ are going to the woods.|We|The|Me','Is _ your bow?|this|with|thin','Artemis ran _ her deer.|with|wish|this','Can you tell me _ the deer went?|where|there|were','The moon is up _.|there|where|three','The deer _ in the woods.|went|tent|want','I can see _ stars.|three|tree|where','We will _ for Hebe.|wait|what|tail','Two owls sat in a _.|tree|three|where']},
+ {id:'cups',name:'Hebe’s Cup Shop',short:'Cup Shop',host:'hebe',ptype:'sent',skill:'Tricky Words (Units 3–5 wall)',bg:'linear-gradient(#fde6f1,#f6b3d0)',
+  intro:[P(['hebe'],'Hebe has a little cup shop up in the clouds. She makes sweet drinks for the gods.'),
+   P(['hebe','demeter'],'“Some seeds fell in my cups!” said Hebe. “Can you help me find them?”')],
+  mid:[P(['hebe'],'Hebe spilled a cup on her own head. Drip, drip, drip! “Now I am a rain cloud!” she said.')],
+  end:[P(['hebe','demeter'],'They found the last seed at the bottom of a pink cup. “Cheers!” said Hebe.')],
+  items:['Last night Hebe _ yes.|said|sad|side','The cups _ on the shelf.|were|where|wear','_ is my cup?|Where|Were|Wear','I _ like a snack, please.|would|wood|word','_ upon a time, there was a cup.|Once|One|On','The gods ate _ cake.|their|there|they','_ is a cup on the table.|There|Their|They','_ you have a cup?|Do|Go|To','Hebe gave the cup _ Zeus.|to|two|too','Hebe has _ cups.|two|to|too','Can I have a cup _?|too|to|two','_ made this cake?|Who|How|Why','_ old are you?|How|Who|Now','This gift is _ Hebe.|from|form|frog','_ are you sad?|Why|Who|Way','Hebe sat _ on a cloud.|down|dawn|done','_ of the cups are pink.|Some|Same|Sum','The cups _ pink.|are|ate|ear','_ want more cake!|They|Then|The','We _ a lot of cups.|have|hive|half']},
+ {id:'beach',name:'Aphrodite’s Shell Beach',short:'Shell Beach',host:'aphrodite',ptype:'pic',skill:'b or d',bg:'linear-gradient(#c9f1f2,#f6e3b4)',
+  intro:[P(['aphrodite'],'Aphrodite was on the beach. She had a pink shell and a white dove.'),
+   P(['aphrodite','demeter'],'“The wind blew seeds into the sand,” said Aphrodite. “Let’s dig them up!”')],
+  mid:[P(['hebe'],'A crab pinched Hebe on the toe. “Hey! That is my toe, not a snack!” said Hebe.')],
+  end:[P(['aphrodite','demeter'],'The dove found the seeds in a shell. Aphrodite gave Demeter a big hug.')],
+  items:['🐛|bug|dug|bag','🦆|duck|buck|deck','🦇|bat|dat|bet','🐶|dog|bog|dig','🚪|door|boor|dear','🥁|drum|brum|dram','🔔|bell|dell|ball','🐻|bear|dear|bean','🍞|bread|dread|braid','🛁|bath|dath|both','🐦|bird|dird|bud','🍩|donut|bonut|dent','📦|box|dox|fox','🎲|dice|bice|dime','👶|baby|daby|bady','🛏️|bed|deb|bad']},
+ {id:'orchard',name:'The Long-O Orchard',short:'Orchard',host:'demeter',ptype:'spell',skill:'Long o: o_e, oa, oe',bg:'linear-gradient(#e9f7d8,#f9d9a8)',
+  intro:[P(['demeter'],'Demeter planted some seeds on a hill. Up came apple trees and plum trees!'),
+   P(['hebe','demeter'],'But a goat was eating the rest of the seeds. “Go home, goat!” said Hebe.')],
+  mid:[P(['hebe'],'The goat licked Hebe on the nose. “Yuck!” said Hebe. “Goat kisses!”')],
+  end:[P(['demeter','hebe'],'Demeter gave the goat a bowl of oats. The goat let go of the seeds.')],
+  items:['⛵|boat|bote|bowt','🐐|goat|gote|got','🦶|toe|toa|to','🦴|bone|boan|bon','🪢|rope|roap|rop','🏠|home|hoam|hom','👃|nose|noas|nos','🧥|coat|cote|cot','🧼|soap|sope|sop','🍦|cone|coan|con','🌹|rose|roas|ros','🛣️|road|rowd|rod','🕳️|hole|hoal|whole','🥅|goal|gole|gol']},
+ {id:'cave',name:'The Silent Letter Cave',short:'Quiet Cave',host:'artemis',ptype:'spell',skill:'Silent letters: kn, wr, wh',bg:'linear-gradient(#41425c,#77779a)',
+  intro:[P(['artemis'],'The wind blew seeds into a deep cave. It was dark and cold inside.'),
+   P(['artemis','hebe'],'Artemis held up her moon. It made a soft white light.')],
+  mid:[P(['hebe'],'“Hello!” yelled Hebe. “Hello... hello...” said the cave. Hebe giggled. “The cave says what I say!”')],
+  end:[P(['artemis','demeter'],'The seeds were stuck in a knot of roots. Artemis cut the knot. Snip!')],
+  items:['🔪|knife|nife|kife','🦵|knee|nee|kee','🧶|knit|nit|kit','🛡️|knight|nite|kight','✍️|write|rite|wite','🎁|wrap|rap|wap','🐋|whale|wale|hale','🎡|wheel|weel|heel','🌾|wheat|weat|heat','⚪|white|wite|rite','🔧|wrench|rench|wrenk']},
+ {id:'kitchen',name:'Hebe’s Kitchen',short:'Kitchen',host:'hebe',ptype:'spell',skill:'Soft c and g',bg:'linear-gradient(#fff1d6,#ffcf9e)',
+  intro:[P(['hebe'],'Hebe went to her kitchen to bake a cake for the feast.'),
+   P(['hebe','demeter'],'But the mice were in the rice! And the mice had the seeds!')],
+  mid:[P(['hebe'],'Hebe got flour all over her face. “Look! I am a ghost!” she said. “Boo!”')],
+  end:[P(['demeter','hebe'],'Demeter gave the mice some cheese. The mice gave back the seeds. What a nice trade!')],
+  items:['🧊|ice|ise|ike','🍚|rice|rise|rike','🐭🐭|mice|mise|mie','😀|face|fase|fake','📄|page|paje|pag','🏁|race|rase|rake','💎|gem|jem|gim','🦒|giraffe|jiraffe|giraf','🏙️|city|sity|kity','🎪|circus|sircus|kirkus','🌌|space|spase|spake','⭕|circle|sircle|kircle','🦠|germ|jerm|gurm','🍊|orange|oranj|orang']},
+ {id:'bridge',name:'The Chunk-It Bridge',short:'Bridge',host:'aphrodite',ptype:'pic',skill:'Two-syllable chunks',bg:'linear-gradient(#c6e7ff,#8ec5f0)',
+  intro:[P(['aphrodite','demeter'],'To get to the top of Mount Olympus, you must cross a long bridge.'),
+   P(['aphrodite'],'A sign on the bridge says: “Read each word in chunks to cross.”')],
+  mid:[P(['hebe'],'Hebe hopped on one foot. “Look! I can cross like a bunny!”')],
+  end:[P(['aphrodite','hebe'],'They made it to the end of the bridge. Aphrodite clapped. “We did it!”')],
+  items:['🥒|pic·kle|pic·nic|pock·et','🚽|toi·let|tab·let|tick·et','🧺|pic·nic|pic·kle|nap·kin','🐰|rab·bit|rib·bon|rob·in','🧁|cup·cake|pan·cake|pup·pet','🥞|pan·cake|cup·cake|pump·kin','🎃|pump·kin|nap·kin|pump·ing','🧲|mag·net|mit·ten|nap·kin','🧤|mit·tens|kit·tens|mag·nets','🐱|kit·ten|mit·ten|kitch·en','🎀|rib·bon|rab·bit|rob·in','🚀|rock·et|pock·et|rob·in','🤖|ro·bot|rob·in|rock·et','🍿|pop·corn|pup·pet|pump·kin','🎫|tick·et|pock·et|toi·let','🌅|sun·set|sun·hat|sub·way','🎒|back·pack|back·yard|pack·et']},
+ {id:'odd',name:'The Odd Spelling Gate',short:'Odd Gate',host:'aphrodite',ptype:'pic',skill:'Odd spellings and -ed',bg:'linear-gradient(#f3e3ff,#d2bbf4)',
+  intro:[P(['aphrodite'],'At the gate, an old sign said: “Only the Odd Spelling Club may pass.”'),
+   P(['aphrodite','demeter'],'“Odd words do not follow the rules,” said Aphrodite. “Look at every letter!”')],
+  mid:[P(['hebe'],'Hebe put her shoe on her head. “Now I am odd too!” she said.')],
+  end:[P(['demeter','aphrodite'],'The gate swung open. The last seeds were inside!')],
+  items:['👟|shoe|show|sho','👁️|eye|ey|iye','✌️|two|tow|too','The bird flew up _ in the sky.|high|hi|hig','👭|friend|frend|freind','😂|laugh|laff|lag','Zeus ate the _ cake!|whole|hole|hol','Hebe _ at the silly joke.|laughed|laughing|lunched','🤧|sneezed|sneaked|squeezed','🦘|jumped|jumpy|dumped','👋|waved|waded|waxed','Lots of _ came to the feast.|people|purple|pebble','Let’s _ up the hill.|walk|wake|wall','How _ cakes did Zeus eat?|many|money|mane']},
+ {id:'feast',name:'The Big Feast',short:'The Feast',host:'zeus',ptype:'mix',skill:'Mixed review',bg:'linear-gradient(#fff3c4,#f7c95c)',
+  intro:[P(['demeter'],'Demeter planted all the seeds. “Let’s Grow!” she said. Up came wheat, grapes, beans, and corn!'),
+   P(['demeter','hebe','artemis','aphrodite'],'Now it is time for the feast. Help get the food on the table!')],
+  mid:[P(['zeus','hebe'],'Zeus came in with a big cake. “Who wants cake?” he asked. “Me!” said Hebe.')],
+  end:[P(['demeter','hebe','artemis','aphrodite'],'The gods ate and ate. The dumpling pets danced on the table.'),
+   P(['zeus','demeter'],'“Thank you, Demeter!” said Zeus. “You saved the feast!”')],
+  items:[]}
+];
+const PETS=[
+ ['Bao','bao','#fbf6ec','','Bao likes to nap in the warm steam.'],
+ ['Pip','gyoza','#f3d29b','wheat','Pip is a crispy little dumpling. Crunch!'],
+ ['Momo','momo','#ffd6e0','flower','Momo is shy, but she gives big hugs.'],
+ ['Dot','xlb','#fbf6ec','moon','Dot is full of soup. Do not squish Dot!'],
+ ['Puff','bao','#fff0a8','star','Puff can jump as high as a cloud.'],
+ ['Mint','gyoza','#d3edb9','laurel','Mint likes to sing in the garden.'],
+ ['Bun-Bun','bao','#ffcfe0','bow','Bun-Bun has a pink bow and a big smile.'],
+ ['Zip','wonton','#fbf6ec','wings','Zip has wings. Zip is as fast as the wind!'],
+ ['Coco','momo','#e8c9a3','heart','Coco loves to snuggle.'],
+ ['Lulu','xlb','#e2d2f7','crown','Lulu has a gold crown. She is a dumpling queen!'],
+ ['Sunny','bao','#ffd9a8','sun','Sunny glows like the sun.'],
+ ['Snow','momo','#d8ebfb','star','Snow is cool and soft, like a cloud.'],
+ ['Honey','gyoza','#ffe48f','heart','Honey is sweet and a bit sticky.'],
+ ['Dash','wonton','#ffdcb8','bolt','Dash has a zap, just like Zeus!'],
+ ['Peach','bao','#ffc6b3','leaf','Peach has a little green leaf on top.'],
+ ['Gus','xlb','#d3edb9','laurel','Gus likes to hum a soft tune.']
+].map(([n,s,c,a,b],id)=>({id,n,s,c,a,b}));
+const PROMPT={spell:'Which one is spelled right?',pic:'Which word matches the picture?',sent:'Which word fits?',chunk:'Read the chunks. Which word is it?'};
+const PRAISE=['Yes! You read every letter.','Smooth reading!','You got it!','Super eyes!','That’s it!','Let’s Grow!','Great looking!','You checked it. Yes!'];
+const NUDGE=['Look at the whole word.','Take your time.','Every letter counts!','Read it, then tap it.'];
+
+/* ---------------- art ---------------- */
+function ring(n,r,a0,a1,fn){let s='';for(let i=0;i<n;i++){const a=(a0+(a1-a0)*i/(n-1))*Math.PI/180;s+=fn((60+r*Math.cos(a)).toFixed(1),(50+r*Math.sin(a)).toFixed(1),(a*180/Math.PI+90).toFixed(0))}return s}
+function goddess(id){
+ const c=CAST[id],H=c.hair;let back,front,crown='';
+ back=c.style==='long'?`<path d="M31 50Q27 18 60 17Q93 18 89 50L97 112Q60 124 23 112Z" fill="${H}"/>`:`<circle cx="60" cy="47" r="30" fill="${H}"/>`;
+ if(c.style==='braid')back+=[72,86,100,113].map((y,i)=>`<ellipse cx="${84+i*2}" cy="${y}" rx="7.5" ry="8.5" fill="${H}"/>`).join('')+`<circle cx="91" cy="122" r="4" fill="${c.trim}"/>`;
+ if(c.style==='pigtails')back+=`<ellipse cx="27" cy="62" rx="11" ry="16" fill="${H}" transform="rotate(20 27 62)"/><ellipse cx="93" cy="62" rx="11" ry="16" fill="${H}" transform="rotate(-20 93 62)"/><circle cx="33" cy="47" r="4.5" fill="${c.trim}"/><circle cx="87" cy="47" r="4.5" fill="${c.trim}"/>`;
+ if(c.style==='pony')back+=`<path d="M78 28Q114 38 102 98Q94 72 82 54Z" fill="${H}"/>`;
+ front=c.style==='zeus'?`<path d="M34 44Q38 22 60 22Q82 22 86 44Q74 34 60 35Q46 34 34 44Z" fill="${H}"/>`:`<path d="M33 48Q35 20 60 21Q86 21 87 48Q79 35 67 37Q60 28 52 37Q41 35 33 48Z" fill="${H}"/>`;
+ if(c.crown==='wheat')crown=ring(7,28,-165,-15,(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="3.2" ry="6.5" fill="#e9b937" stroke="#b8871b" transform="rotate(${r} ${x} ${y})"/>`);
+ if(c.crown==='laurel')crown=ring(8,28,-170,-10,(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="3" ry="6.5" fill="#6aa84f" transform="rotate(${+r+30} ${x} ${y})"/>`);
+ if(c.crown==='flowers')crown=ring(5,28,-155,-25,(x,y)=>`<circle cx="${x}" cy="${y}" r="5" fill="#ff8fb8"/><circle cx="${x}" cy="${y}" r="2" fill="#ffe066"/>`);
+ if(c.crown==='moon')crown=`<path d="M38 30Q60 16 82 30" stroke="#c9d3e6" stroke-width="3.5" fill="none"/><path d="M55 10A10 10 0 1 0 68 25A8 8 0 1 1 55 10Z" fill="#eef3fb" stroke="#aeb9d1" stroke-width="1.5"/>`;
+ if(c.crown==='rose')crown=`<path d="M30 40l-7 6 9 1z" fill="#5fae4e"/><circle cx="35" cy="36" r="7.5" fill="#e8496f"/><path d="M31 36q4-5 8 0q-4 4-6 0" stroke="#a8234a" stroke-width="1.5" fill="none"/>`+[0,1,2,3,4].map(i=>`<circle cx="${46+i*7}" cy="${(24+Math.abs(i-2)*1.8).toFixed(1)}" r="2.4" fill="#fff" stroke="#e7dccb" stroke-width=".8"/>`).join('');
+ const props={
+  wheat:`<path d="M96 146L102 70" stroke="#c9a227" stroke-width="3" stroke-linecap="round"/>`+[0,1,2,3,4].map(i=>{const x=101-i*.6+(i%2?-5:5),y=74+i*8;return `<ellipse cx="${x}" cy="${y}" rx="3" ry="6" fill="#e9b937" transform="rotate(${i%2?-30:30} ${x} ${y})"/>`}).join(''),
+  cup:`<path d="M84 88h22q0 15-11 17q-11-2-11-17z" fill="#f2c94c" stroke="#c99a1e" stroke-width="1.5"/><rect x="93" y="104" width="4" height="10" fill="#e0b23a"/><rect x="88" y="113" width="14" height="4" rx="2" fill="#e0b23a"/>`,
+  bow:`<path d="M98 66Q122 106 98 146" stroke="#8a5a3b" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M98 66L98 146" stroke="#d9d4cc" stroke-width="1.5"/>`,
+  shell:`<path d="M84 110Q96 80 112 110Q98 118 84 110Z" fill="#ffb3c7" stroke="#e8879f" stroke-width="1.5"/><path d="M98 86L90 110M98 86L98 113M98 86L106 110" stroke="#e8879f" stroke-width="1.3"/>`,
+  bolt:`<path d="M100 62L86 98H97L90 132L112 88H100L108 62Z" fill="#ffd43b" stroke="#e0a800" stroke-width="1.5"/>`};
+ const zeus=c.style==='zeus';
+ const beard=zeus?`<path d="M36 56Q38 96 60 100Q82 96 84 56Q74 70 60 70Q46 70 36 56Z" fill="${H}"/><path d="M50 66Q55 62 60 66Q65 62 70 66" stroke="#d6d6d6" stroke-width="3" fill="none" stroke-linecap="round"/>`:`<path d="M53 63Q60 69.5 67 63" stroke="#7a3b2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+ const body=`<ellipse cx="60" cy="164" rx="36" ry="5" fill="#000" opacity=".12"/>${back}
+<path d="M38 82Q60 72 82 82L96 158Q60 166 24 158Z" fill="${c.dress}"/><path d="M28 150Q60 158 92 150" stroke="${c.trim}" stroke-width="4" fill="none"/>
+<path d="M45 80L78 104" stroke="${c.trim}" stroke-width="5" stroke-linecap="round"/><rect x="35" y="104" width="50" height="7" rx="3.5" fill="${c.trim}"/>
+<path d="M38 88Q30 104 30 118" stroke="${c.skin}" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M82 88Q92 98 94 108" stroke="${c.skin}" stroke-width="8" stroke-linecap="round" fill="none"/>
+<circle cx="30" cy="120" r="5.5" fill="${c.skin}"/>${props[c.prop]}<circle cx="94" cy="109" r="5.5" fill="${c.skin}"/>
+<ellipse cx="48" cy="162" rx="7" ry="4" fill="#8a5a3b"/><ellipse cx="72" cy="162" rx="7" ry="4" fill="#8a5a3b"/>
+<rect x="54" y="70" width="12" height="10" fill="${c.skin}"/><circle cx="60" cy="50" r="27" fill="${c.skin}"/>${front}${crown}
+<ellipse cx="50" cy="54" rx="3.6" ry="4.6" fill="#2b1d16"/><circle cx="51.3" cy="52.3" r="1.4" fill="#fff"/><ellipse cx="70" cy="54" rx="3.6" ry="4.6" fill="#2b1d16"/><circle cx="71.3" cy="52.3" r="1.4" fill="#fff"/>
+<ellipse cx="43" cy="62" rx="5" ry="3" fill="#ff7f99" opacity=".45"/><ellipse cx="77" cy="62" rx="5" ry="3" fill="#ff7f99" opacity=".45"/>${beard}`;
+ return `<svg viewBox="0 0 120 172" role="img" aria-label="${c.name}">${c.small?`<g transform="translate(12 33) scale(.8)">${body}</g>`:body}</svg>`;
+}
+function shade(hex,k){const n=parseInt(hex.slice(1),16);return `rgb(${Math.round((n>>16)*k)},${Math.round((n>>8&255)*k)},${Math.round((n&255)*k)})`}
+function star(cx,cy,R,r){let p=[];for(let i=0;i<10;i++){const a=(i*36-90)*Math.PI/180,q=i%2?r:R;p.push((cx+q*Math.cos(a)).toFixed(1)+','+(cy+q*Math.sin(a)).toFixed(1))}return p.join(' ')}
+function pet(p,cls=''){
+ const c=p.c,d=shade(c,.75);
+ const S={
+  bao:`<path d="M18 76Q18 30 60 28Q102 30 102 76Q102 94 60 94Q18 94 18 76Z"/><path d="M50 36Q60 26 70 36M55 41Q60 34 65 41" stroke="${d}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+  gyoza:`<path d="M10 76Q28 28 60 26Q92 28 110 76Q60 98 10 76Z"/>`+[30,45,60,75,90].map(x=>`<path d="M${x-6} ${(31+Math.abs(60-x)/4).toFixed(1)}q6-7 12 0" stroke="${d}" stroke-width="2.3" fill="none"/>`).join(''),
+  xlb:`<path d="M20 78Q16 46 46 38Q54 28 60 18Q66 28 74 38Q104 46 100 78Q100 96 60 96Q20 96 20 78Z"/><path d="M60 20L42 46M60 20L52 44M60 20L68 44M60 20L78 46" stroke="${d}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
+  momo:`<path d="M22 76Q24 42 60 22Q96 42 98 76Q98 94 60 94Q22 94 22 76Z"/><path d="M60 22q-6 8-2 14M60 22q6 8 2 14" stroke="${d}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
+  wonton:`<path d="M32 64L6 46L12 80Z M88 64L114 46L108 80Z"/><ellipse cx="60" cy="70" rx="35" ry="26"/><path d="M42 50Q60 30 78 50" stroke="${d}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`};
+ const top={bao:0,gyoza:0,xlb:-10,momo:-6,wonton:14}[p.s], fy={bao:66,gyoza:66,xlb:70,momo:68,wonton:70}[p.s];
+ const A={
+  star:`<polygon points="${star(60,16,12,5)}" fill="#ffd43b" stroke="#e0a800" stroke-width="1.2"/>`,
+  crown:`<path d="M44 30L46 12L54 22L60 8L66 22L74 12L76 30Z" fill="#f2c94c" stroke="#c99a1e" stroke-width="1.5"/>`,
+  laurel:[[44,26,-40],[52,22,-20],[68,22,20],[76,26,40]].map(([x,y,r])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="8" fill="#5fae4e" transform="rotate(${r} ${x} ${y})"/>`).join(''),
+  flower:[0,72,144,216,288].map(a=>{const x=(78+6*Math.cos(a*Math.PI/180)).toFixed(1),y=(24+6*Math.sin(a*Math.PI/180)).toFixed(1);return `<circle cx="${x}" cy="${y}" r="5" fill="#ff8fb8"/>`}).join('')+`<circle cx="78" cy="24" r="3.5" fill="#ffe066"/>`,
+  bow:`<path d="M60 24L44 14L44 34ZM60 24L76 14L76 34Z" fill="#ff7fae"/><circle cx="60" cy="24" r="4.5" fill="#e8558e"/>`,
+  heart:`<path d="M60 32C44 22 50 6 60 15C70 6 76 22 60 32Z" fill="#ff5d8f"/>`,
+  moon:`<path d="M56 4A12 12 0 1 0 70 24A9 9 0 1 1 56 4Z" fill="#fff6c9" stroke="#e0c96b" stroke-width="1.5"/>`,
+  wheat:`<path d="M60 30L64 4" stroke="#c9a227" stroke-width="2.5"/>`+[8,14,20].map(y=>`<ellipse cx="59" cy="${y}" rx="2.5" ry="5" fill="#e9b937" transform="rotate(-30 59 ${y})"/><ellipse cx="67" cy="${y+1}" rx="2.5" ry="5" fill="#e9b937" transform="rotate(30 67 ${y+1})"/>`).join(''),
+  sun:`<circle cx="60" cy="16" r="8" fill="#ffd43b"/>`+[0,45,90,135,180,225,270,315].map(a=>{const r=a*Math.PI/180;return `<path d="M${(60+11*Math.cos(r)).toFixed(1)} ${(16+11*Math.sin(r)).toFixed(1)}L${(60+15*Math.cos(r)).toFixed(1)} ${(16+15*Math.sin(r)).toFixed(1)}" stroke="#ffb300" stroke-width="2.5" stroke-linecap="round"/>`}).join(''),
+  leaf:`<path d="M60 30Q58 12 76 8Q78 26 60 30Z" fill="#5fae4e"/><path d="M60 30Q66 20 74 11" stroke="#3f7d32" stroke-width="1.5" fill="none"/>`,
+  bolt:`<path d="M64 0L52 18H61L56 32L74 12H64L70 0Z" fill="#ffd43b" stroke="#e0a800" stroke-width="1.3"/>`,
+  wings:''};
+ const wings=p.a==='wings'?`<ellipse cx="14" cy="48" rx="15" ry="9" fill="#fff" stroke="#cfd6e4" stroke-width="2" transform="rotate(-25 14 48)"/><ellipse cx="106" cy="48" rx="15" ry="9" fill="#fff" stroke="#cfd6e4" stroke-width="2" transform="rotate(25 106 48)"/>`:'';
+ const face=`<ellipse cx="48" cy="${fy}" rx="4" ry="5" fill="#2b1d16"/><circle cx="49.4" cy="${fy-2}" r="1.5" fill="#fff"/><ellipse cx="72" cy="${fy}" rx="4" ry="5" fill="#2b1d16"/><circle cx="73.4" cy="${fy-2}" r="1.5" fill="#fff"/><ellipse cx="39" cy="${fy+7}" rx="5.5" ry="3.2" fill="#ff7f99" opacity=".5"/><ellipse cx="81" cy="${fy+7}" rx="5.5" ry="3.2" fill="#ff7f99" opacity=".5"/><path d="M54 ${fy+6}q3 4 6 0q3 4 6 0" stroke="#7a3b2a" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+ return `<svg class="${cls}" viewBox="0 -14 120 118" role="img" aria-label="${p.n}"><ellipse cx="60" cy="98" rx="40" ry="5" fill="#000" opacity=".12"/>${wings}<g fill="${c}" stroke="${d}" stroke-width="2">${S[p.s]}</g>${face}<g transform="translate(0 ${top})">${A[p.a]||''}</g></svg>`;
+}
+const STEAMER=`<svg class="steamer" viewBox="0 0 200 150"><path d="M24 62h152v56q-76 22-152 0z" fill="#d9a35f" stroke="#a8702e" stroke-width="3"/><path d="M24 80q76 14 152 0M24 98q76 14 152 0" stroke="#b9823e" stroke-width="3" fill="none"/><g class="lid"><path d="M22 58v-10q78-28 156 0v10q-78 14-156 0z" fill="#e2b06a" stroke="#a8702e" stroke-width="3"/><rect x="88" y="26" width="24" height="10" rx="5" fill="#a8702e"/></g></svg>`;
+
+/* ---------------- saving ---------------- */
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const KEY=p=>'olympusFeast.v1.'+p;
+const blank=()=>({v:1,pets:[],stars:0,done:{},words:{},sessions:[],settings:{mute:false,all:false},updated:0});
+function load(p){let d=null;try{d=JSON.parse(ls.get(KEY(p))||'null')}catch(e){}return Object.assign(blank(),d||{})}
+let profile=ls.get('olympusFeast.profile')==='test'?'test':'mila';
+let D=load(profile);
+let db=null,cloud='local',writing=false,again=false,retried=false;
+function save(toCloud){D.updated=Date.now();ls.set(KEY(profile),JSON.stringify(D));if(toCloud)push()}
+async function push(){
+ if(!db)return; if(writing){again=true;return} writing=true;
+ try{await db.doc('progress/'+profile).set(JSON.parse(JSON.stringify(D)));cloud='ok';retried=false}
+ catch(e){const code=e&&e.code;cloud=code==='invalid_argument'?'readonly':'error';
+  if(code==='unavailable'&&!retried){retried=true;writing=false;setTimeout(push,1200+Math.random()*1000);return}}
+ writing=false; if(again){again=false;push()}
+}
+async function pull(){
+ if(!db)return; const p=profile; cloud='syncing';
+ const t=setTimeout(()=>{if(cloud==='syncing')cloud='error'},10000);
+ try{const s=await db.doc('progress/'+p).get();clearTimeout(t);if(p!==profile)return;
+  if(cloud==='syncing')cloud='ok';
+  if(s.exists){const c=s.data()||{};
+   if((c.updated||0)>(D.updated||0)){D=Object.assign(blank(),JSON.parse(JSON.stringify(c)));ls.set(KEY(p),JSON.stringify(D));refresh()}
+   else if((D.updated||0)>(c.updated||0))push();
+  }else if(D.updated)push();
+ }catch(e){clearTimeout(t);cloud='error'}
+}
+(async()=>{try{if(window.claude&&typeof window.claude.use==='function')db=await window.claude.use('db')}catch(e){db=null}if(db)pull()})();
+function record(word,skill,first){
+ const s=D.words[word]||(D.words[word]={s:skill,seen:0,first:0,miss:0,streak:0,last:0});
+ s.seen++; if(first){s.first++;s.streak++}else{s.miss++;s.streak=0;s.last=Date.now()}
+}
+
+/* ---------------- sound (correct answers only; never an error sound) ---------------- */
+let actx=null;
+function chime(notes){if(D.settings.mute)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const t0=actx.currentTime;
+ notes.forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain(),t=t0+i*.11;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+.65)})}catch(e){}}
+
+/* ---------------- helpers ---------------- */
+const app=document.getElementById('app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pickOne=a=>a[Math.floor(Math.random()*a.length)];
+const setBg=b=>{document.body.style.background=b};
+const fmt=w=>w.split('·').map(esc).join('<span class="dot">·</span>');
+let screen='home',run=null,story=null;
+function parse(s,L){const [a,b,c,d]=s.split('|');return {kind:a.includes('_')?'sent':b.includes('·')?'chunk':L.ptype,cue:a,ans:b,opts:[b,c,d],word:b.replace(/·/g,''),skill:L.skill,lvl:L.id}}
+function weight(it){const s=D.words[it.word];let w=1;if(!s)w+=1.5;else{if(s.miss>0&&s.streak<2)w+=3;if(s.streak>=3)w*=.4}return w}
+function wsample(arr,n){const pool=arr.slice(),out=[];while(out.length<n&&pool.length){const tot=pool.reduce((t,x)=>t+weight(x),0);let r=Math.random()*tot,i=0;for(;i<pool.length-1;i++){r-=weight(pool[i]);if(r<=0)break}out.push(pool.splice(i,1)[0])}return out}
+function buildItems(i){
+ if(LEVELS[i].id!=='feast')return wsample(LEVELS[i].items.map(s=>parse(s,LEVELS[i])),10);
+ const all=LEVELS.slice(0,-1).map(L=>L.items.map(s=>parse(s,L)));
+ const chosen=all.map(a=>wsample(a,1)[0]);
+ const rest=all.flat().filter(x=>!chosen.includes(x));
+ return shuffle(chosen.concat(wsample(rest,3)));
+}
+const isOpen=i=>i===0||(D.done[LEVELS[i-1].id]>0)||(profile==='test'&&D.settings.all);
+function refresh(){if(['home','map','pets'].includes(screen))show(screen)}
+function show(s){screen=s;window.scrollTo(0,0);({home:renderHome,map:renderMap,pets:renderPets,parent:renderParent,pin:renderPin}[s])()}
+
+/* ---------------- screens ---------------- */
+function renderHome(){
+ setBg('linear-gradient(#8fd3ff,#dff3ff 55%,#fff6dc)');
+ app.innerHTML=`<div class="home"><h1>Demeter’s Big Feast</h1><p class="sub">A Mount Olympus reading quest</p>
+ <div class="castrow">${['demeter','hebe','artemis','aphrodite'].map(id=>`<figure>${goddess(id)}<figcaption><b>${CAST[id].kid}</b> is ${CAST[id].name}</figcaption></figure>`).join('')}</div>
+ <div class="homebtns"><button class="big gold" data-act="map">Play ▶</button><button class="big" data-act="pets">My Dumpling Pets <span class="count">${D.pets.length}/${PETS.length}</span></button></div>
+ ${profile==='test'?'<p><span class="testtag">Test profile</span></p>':''}
+ <button class="gear" id="gear" data-act="gearhint">⚙ Grown-ups</button></div>`;
+}
+function renderMap(){
+ setBg('linear-gradient(#bfe6ff,#e6f6ff)');
+ const n=LEVELS.length,H=n*124+120,xs=[50,27,50,73,50,27,50,73,50,50];
+ const pts=LEVELS.map((L,i)=>[xs[i],H-80-i*124]);
+ const path='M'+pts.map(p=>p.join(' ')).join(' L');
+ let now=-1;
+ const nodes=LEVELS.map((L,i)=>{const done=D.done[L.id]>0,open=isOpen(i);if(open&&!done&&now<0)now=i;
+  return `<button class="node ${done?'done':''} ${open&&!done&&now===i?'now':''}" style="left:${pts[i][0]}%;top:${pts[i][1]}px" data-act="level" data-i="${i}" ${open?'':'disabled'} aria-label="${esc(L.name)}"><span class="num">${i===n-1?'🏛️':done?'✓':i+1}</span><span class="lbl">${esc(L.short)}</span></button>`}).join('');
+ app.innerHTML=`<div class="bar"><button class="pill" data-act="home">⌂ Home</button><div class="pill title">Mount Olympus</div><button class="pill" data-act="pets">🥟 ${D.pets.length}</button></div>
+ <div class="map" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
+ <path d="M-20 ${H} L50 30 L120 ${H}Z" fill="#b9d3e6" opacity=".7"/><path d="M50 30 L40 ${150} L46 ${130} L50 ${160} L54 ${130} L60 ${150}Z" fill="#fff"/>
+ <path d="${path}" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" opacity=".9"/>
+ <path d="${path}" fill="none" stroke="#e9b937" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${nodes}</div>`;
+ const cur=app.querySelector('.node.now')||app.querySelectorAll('.node')[0];
+ if(cur)setTimeout(()=>cur.scrollIntoView({block:'center',behavior:'smooth'}),60);
+}
+function startLevel(i){
+ const L=LEVELS[i];const q=buildItems(i);
+ run={i,L,q,k:0,base:q.length,first:0,firstBase:0,missed:[],tries:0,t0:Date.now(),midDone:false,locked:false};
+ renderStory(L.intro,()=>renderRound(),D.done[L.id]>0);
+}
+function renderStory(pages,done,skippable,idx=0){
+ screen='story';story={pages,done,skippable,idx};const L=run.L,pg=pages[idx];
+ setBg(L.bg);window.scrollTo(0,0);
+ app.innerHTML=`<div class="bar"><button class="pill" data-act="map">◀ Map</button><div class="pill title">${esc(L.name)}</div>${skippable?'<button class="pill" data-act="skip">Skip ▶▶</button>':''}</div>
+ <div class="story"><div class="stage">${pg.w.map(goddess).join('')}</div><p class="tale">${esc(pg.t)}</p>
+ <button class="big gold" data-act="next">${idx<pages.length-1?'Next ▶':'Go! ▶'}</button></div>`;
+}
+function renderRound(){
+ const r=run,L=r.L;
+ if(!r.midDone&&r.k===Math.ceil(r.base/2)){r.midDone=true;return renderStory(L.mid,renderRound,false)}
+ screen='round';setBg(L.bg);window.scrollTo(0,0);
+ const it=r.q[r.k];r.tries=0;r.locked=false;
+ const host=L.host==='demeter'?'hebe':L.host;
+ const seeds=Array.from({length:r.base},(_,j)=>`<i class="seed ${j<Math.min(r.k,r.base)?'on':''}"></i>`).join('');
+ const cue=it.kind==='sent'?`<p class="cue-sent">${esc(it.cue).replace('_','<span class="blank" id="blank">&nbsp;</span>')}</p>`:`<div class="cue-pic" aria-hidden="true">${it.cue}</div>`;
+ const btns=shuffle(it.opts).map(o=>`<button class="opt" data-act="pick" data-w="${esc(o)}">${fmt(o)}</button>`).join('');
+ app.innerHTML=`<div class="bar"><button class="pill" data-act="map">◀ Map</button><div class="pill title">${esc(L.name)}</div><div class="pill seeds" aria-label="${Math.min(r.k,r.base)} of ${r.base} seeds">${seeds}</div></div>
+ <div class="play"><div class="side"><div class="bubble" id="bub">${r.k===0?'Look at every letter.':pickOne(NUDGE)}</div><div class="duo">${goddess('demeter')}${goddess(host)}</div></div>
+ <div class="card">${r.k>=r.base?'<span class="again">One more look!</span>':''}<p class="prompt">${PROMPT[it.kind]}</p>${cue}<div class="opts">${btns}</div></div></div>`;
+}
+function bub(t){const b=document.getElementById('bub');if(b)b.textContent=t}
+function sparkle(el){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const r=el.getBoundingClientRect();
+ for(let i=0;i<9;i++){const s=document.createElement('span');s.className='spark';s.textContent=pickOne(['✨','⭐','🌾','✨']);
+  s.style.left=(r.left+r.width/2-15)+'px';s.style.top=(r.top+r.height/2-15)+'px';const a=i/9*Math.PI*2;
+  s.style.setProperty('--x',Math.cos(a)*120+'px');s.style.setProperty('--y',Math.sin(a)*90+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),950)}}
+function pick(btn){
+ const r=run;if(!r||r.locked||btn.disabled)return;const it=r.q[r.k],w=btn.dataset.w;
+ if(w===it.ans){
+  r.locked=true;btn.classList.add('yes');const first=r.tries===0;
+  record(it.word,it.skill,first);
+  if(first){r.first++;if(r.k<r.base)r.firstBase++}
+  else{if(!r.missed.includes(it.word))r.missed.push(it.word);if(!it.again)r.q.push(Object.assign({},it,{again:true}))}
+  const bl=document.getElementById('blank');if(bl){bl.textContent=it.ans;bl.classList.add('filled')}
+  bub(first?pickOne(PRAISE):'Yes! That’s the one.');sparkle(btn);chime([659,880]);
+  const sd=app.querySelectorAll('.seed')[r.k];if(sd)sd.classList.add('on');
+  save(false);
+  setTimeout(()=>{r.k++;if(r.k>=r.q.length)finishLevel();else renderRound()},1500);
+ }else{
+  r.tries++;btn.classList.add('out');btn.disabled=true;
+  if(r.tries===1)bub('Look again. Check every letter.');
+  else{bub('It’s this one. Read it, then tap it.');app.querySelectorAll('.opt').forEach(b=>{if(b.dataset.w===it.ans)b.classList.add('glow')})}
+ }
+}
+function finishLevel(){
+ const r=run,L=r.L;
+ D.done[L.id]=(D.done[L.id]||0)+1;
+ D.sessions.unshift({d:new Date().toISOString(),lvl:L.id,n:r.base,first:r.firstBase,extra:r.q.length-r.base,mins:Math.round((Date.now()-r.t0)/6000)/10,missed:r.missed});
+ D.sessions=D.sessions.slice(0,100);
+ let prize;
+ if(r.i<10&&!D.pets.includes(r.i))prize=r.i;else{const p=PETS.find(p=>!D.pets.includes(p.id));prize=p?p.id:null}
+ if(prize===null)D.stars++;else D.pets.push(prize);
+ save(true);
+ renderStory(L.end,()=>renderPrize(prize),false);
+}
+function renderPrize(id){
+ screen='prize';setBg('linear-gradient(#fff6dc,#ffe28a)');window.scrollTo(0,0);
+ if(id===null){
+  app.innerHTML=`<div class="story"><h1 style="font-size:clamp(34px,6vw,52px);color:#154f82;text-align:center">All your pets got a gold star!</h1>
+  <div class="petgrid">${PETS.slice(0,8).map(p=>`<div class="petcard">${pet(p)}</div>`).join('')}</div>
+  <p class="tale small">⭐ Gold stars: ${D.stars}</p><div class="homebtns"><button class="big gold" data-act="map">Back to the map ▶</button><button class="big" data-act="pets">See all my pets</button></div></div>`;
+  chime([523,659,784,1047]);return;
+ }
+ const p=PETS[id];
+ app.innerHTML=`<div class="story"><div class="reveal">${STEAMER}<i class="puff"></i><i class="puff"></i><i class="puff"></i><i class="puff"></i><div class="pop">${pet(p)}</div></div>
+ <h1 style="font-size:clamp(34px,6vw,52px);color:#154f82;text-align:center">A new dumpling pet!</h1>
+ <p class="tale small">This is <b>${esc(p.n)}</b>. ${esc(p.b)}</p>
+ <div class="homebtns"><button class="big gold" data-act="map">Back to the map ▶</button><button class="big" data-act="pets">See all my pets</button></div></div>`;
+ setTimeout(()=>chime([523,659,784,1047]),1000);
+}
+function renderPets(){
+ setBg('linear-gradient(#fff6dc,#ffe8b8)');
+ app.innerHTML=`<div class="bar"><button class="pill" data-act="home">⌂ Home</button><button class="pill" data-act="map">Mount Olympus ▶</button></div>
+ <div class="pethead"><h1>My Dumpling Pets</h1><p class="sub">${D.pets.length} of ${PETS.length}${D.stars?` · ⭐ ${D.stars}`:''}</p></div>
+ <div class="petgrid">${PETS.map(p=>{const have=D.pets.includes(p.id);return have?`<button class="petcard" data-act="boing">${pet(p)}<b>${esc(p.n)}</b><small>${esc(p.b)}</small></button>`:`<div class="petcard locked">${pet(p,'ghost')}<b>?</b><small>Win a land to meet me!</small></div>`}).join('')}</div>`;
+}
+/* grown-ups */
+let pinBuf='';
+const getPin=()=>ls.get('olympusFeast.pin')||'8642';
+function renderPin(){
+ screen='pin';setBg('#e9eef6');
+ app.innerHTML=`<div class="pinwrap" id="pw"><h2>Grown-ups</h2><p class="muted">Enter the PIN</p><div class="pindots">${[0,1,2,3].map(i=>`<i class="${i<pinBuf.length?'f':''}"></i>`).join('')}</div>
+ <div class="pad">${[1,2,3,4,5,6,7,8,9,'C',0,'⌫'].map(k=>`<button data-act="pin" data-k="${k}">${k}</button>`).join('')}</div>
+ <p><button class="big" style="font-size:18px;min-height:48px" data-act="home">Cancel</button></p></div>`;
+}
+function stats(){
+ const skills=LEVELS.slice(0,-1).map(L=>{let seen=0,first=0;L.items.forEach(s=>{const w=s.split('|')[1].replace(/·/g,''),st=D.words[w];if(st){seen+=st.seen;first+=st.first}});return {L,seen,first,plays:D.done[L.id]||0}});
+ const watch=Object.entries(D.words).filter(([w,s])=>s.miss>0).sort((a,b)=>(b[1].miss-b[1].streak)-(a[1].miss-a[1].streak)||b[1].last-a[1].last).slice(0,24);
+ return {skills,watch};
+}
+let resetArm=false;
+function renderParent(){
+ screen='parent';setBg('#e9eef6');
+ const {skills,watch}=stats();
+ const cloudTxt={ok:'Saved to your Claude account and on this device.',syncing:'Checking cloud save…',readonly:'This account can view but not save to the cloud, so progress is kept on this device only.',error:'Couldn’t reach cloud save just now. Progress is kept on this device.',local:'Saved on this device only. Open the game from its claude.ai link to save to your account.'}[db?cloud:'local'];
+ const name=profile==='mila'?'Mila':'Test';
+ const lvlName=id=>(LEVELS.find(L=>L.id===id)||{short:id}).short;
+ app.innerHTML=`<div class="sheet"><div class="row" style="justify-content:space-between"><h2>Grown-ups</h2><button class="s" data-act="home">Done</button></div>
+ <p class="muted">${esc(cloudTxt)}</p>
+ <div class="row"><b>Profile:</b><button class="s ${profile==='mila'?'on':''}" data-act="prof" data-p="mila">Mila</button><button class="s ${profile==='test'?'on':''}" data-act="prof" data-p="test">Test</button>
+ ${profile==='test'?`<button class="s ${D.settings.all?'on':''}" data-act="all">Unlock all lands</button>`:''}
+ <button class="s ${D.settings.mute?'':'on'}" data-act="mute">Sound ${D.settings.mute?'off':'on'}</button></div>
+ <h3>First-try reading by skill</h3>
+ <table><thead><tr><th>Land</th><th>Skill</th><th class="n">Wins</th><th class="n">First try</th><th></th></tr></thead><tbody>
+ ${skills.map(s=>{const pc=s.seen?Math.round(100*s.first/s.seen):null;return `<tr><td>${esc(s.L.short)}</td><td>${esc(s.L.skill)}</td><td class="n">${s.plays}</td><td class="n">${pc===null?'–':pc+'% <span class="muted">('+s.first+'/'+s.seen+')</span>'}</td><td><div class="bar2"><i style="width:${pc||0}%"></i></div></td></tr>`}).join('')}
+ <tr><td>${esc(LEVELS[9].short)}</td><td>Mixed review</td><td class="n">${D.done.feast||0}</td><td></td><td></td></tr></tbody></table>
+ <h3>Words to watch</h3>
+ ${watch.length?`<table><thead><tr><th>Word</th><th>Skill</th><th class="n">Missed</th><th class="n">Seen</th><th class="n">Right in a row now</th></tr></thead><tbody>${watch.map(([w,s])=>`<tr><td><b>${esc(w)}</b></td><td>${esc(s.s)}</td><td class="n">${s.miss}</td><td class="n">${s.seen}</td><td class="n">${s.streak}</td></tr>`).join('')}</tbody></table>`:'<p class="muted">No misses yet.</p>'}
+ <p class="muted">A word she misses comes back later in the same land, and is picked more often next time until she gets it right twice in a row.</p>
+ <h3>Recent plays</h3>
+ ${D.sessions.length?`<table><thead><tr><th>When</th><th>Land</th><th class="n">First try</th><th class="n">Minutes</th><th>Missed</th></tr></thead><tbody>${D.sessions.slice(0,15).map(s=>`<tr><td>${esc(new Date(s.d).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))}</td><td>${esc(lvlName(s.lvl))}</td><td class="n">${s.first}/${s.n}</td><td class="n">${s.mins}</td><td>${esc((s.missed||[]).join(', '))}</td></tr>`).join('')}</tbody></table>`:'<p class="muted">No plays yet.</p>'}
+ <p class="muted">Pets: ${D.pets.length}/${PETS.length} · Gold stars: ${D.stars}</p>
+ <h3>Copy data</h3><p class="muted">Paste this into a chat with Claude to look at ${name}’s progress.</p>
+ <textarea id="exp" readonly>${esc(JSON.stringify({profile,exported:new Date().toISOString(),done:D.done,pets:D.pets,words:D.words,sessions:D.sessions}))}</textarea>
+ <div class="row"><button class="s" data-act="copy">Copy</button><span id="copied" class="muted"></span></div>
+ <h3>Settings</h3>
+ <div class="row"><label for="newpin">New PIN</label><input id="newpin" inputmode="numeric" maxlength="4" placeholder="4 digits"><button class="s" data-act="setpin">Save PIN</button><span id="pinmsg" class="muted"></span></div>
+ <div class="row" style="margin-top:12px">${resetArm?`<button class="s warn" data-act="reset2">Yes, erase ${name}’s progress and pets</button><button class="s" data-act="reset0">Keep it</button>`:`<button class="s warn" data-act="reset1">Reset ${name}’s progress…</button>`}</div></div>`;
+}
+
+/* ---------------- events ---------------- */
+let holdT=null;
+app.addEventListener('pointerdown',e=>{const g=e.target.closest('#gear');if(!g)return;g.classList.add('holding');holdT=setTimeout(()=>{pinBuf='';show('pin')},1200)});
+['pointerup','pointerleave','pointercancel'].forEach(t=>app.addEventListener(t,()=>{clearTimeout(holdT);const g=document.getElementById('gear');if(g)g.classList.remove('holding')}));
+app.addEventListener('click',e=>{
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+ switch(a){
+  case 'home':show('home');break;
+  case 'map':show('map');break;
+  case 'pets':show('pets');break;
+  case 'level':startLevel(+b.dataset.i);break;
+  case 'next':if(story.idx<story.pages.length-1)renderStory(story.pages,story.done,story.skippable,story.idx+1);else story.done();break;
+  case 'skip':story.done();break;
+  case 'pick':pick(b);break;
+  case 'boing':b.classList.remove('boing');void b.offsetWidth;b.classList.add('boing');break;
+  case 'gearhint':{let h=document.querySelector('.hint');if(!h){h=document.createElement('div');h.className='hint';h.textContent='Grown-ups: press and hold.';app.appendChild(h);setTimeout(()=>h.remove(),1800)}break}
+  case 'pin':{const k=b.dataset.k;if(k==='C')pinBuf='';else if(k==='⌫')pinBuf=pinBuf.slice(0,-1);else if(pinBuf.length<4)pinBuf+=k;
+   if(pinBuf.length===4){if(pinBuf===getPin()){pinBuf='';resetArm=false;show('parent');return}renderPin();const pw=document.getElementById('pw');pw.classList.add('bad');pinBuf='';setTimeout(renderPin,500);return}renderPin();break}
+  case 'prof':profile=b.dataset.p;ls.set('olympusFeast.profile',profile);D=load(profile);resetArm=false;renderParent();if(db)pull().then(()=>{if(screen==='parent')renderParent()});break;
+  case 'all':D.settings.all=!D.settings.all;save(true);renderParent();break;
+  case 'mute':D.settings.mute=!D.settings.mute;save(true);renderParent();break;
+  case 'copy':{const t=document.getElementById('exp');const done=()=>{document.getElementById('copied').textContent='Copied.'};
+   try{navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.getElementById('copied').textContent='Selected. Press Ctrl+C to copy.'})}catch(err){t.select()}break}
+  case 'setpin':{const v=document.getElementById('newpin').value.trim();const m=document.getElementById('pinmsg');if(/^\d{4}$/.test(v)){ls.set('olympusFeast.pin',v);m.textContent='PIN saved on this device.'}else m.textContent='Use 4 digits.';break}
+  case 'reset1':resetArm=true;renderParent();break;
+  case 'reset0':resetArm=false;renderParent();break;
+  case 'reset2':{const keep=D.settings;D=blank();D.settings=keep;resetArm=false;save(true);renderParent();break}
+ }
+});
+app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='gear'){e.preventDefault();pinBuf='';show('pin')}});
+show('home');
+}
+</script>
+</body>
+</html>
