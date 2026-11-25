@@ -48,7 +48,9 @@ h1,h2{margin:0;line-height:1.08;text-wrap:balance}
 .seed{width:15px;height:21px;border-radius:50%/60% 60% 40% 40%;background:rgba(0,0,0,.13);transition:background .3s,transform .3s}
 .seed.on{background:#e9b937;transform:scale(1.15)}
 /* map */
-.map{position:relative;max-width:760px;margin:0 auto 40px;border-radius:30px;overflow:hidden;background:linear-gradient(#fff6dc,#cdeaff 22%,#bfe6ff 55%,#a8dc8a)}
+.map{position:relative;max-width:760px;margin:0 auto 40px;border-radius:30px;overflow:hidden;background:linear-gradient(#f5fbff,#dcefff 35%,#cdeaff 50%,#bfe6ff 75%,#a8dc8a)}
+.world{position:absolute;left:50%;transform:translate(-50%,-50%);background:var(--blue2);color:#fff;font-weight:700;font-size:18px;border-radius:999px;padding:6px 18px;white-space:nowrap;z-index:1}
+.world.w2{background:#4a7fb5}
 .map>svg{position:absolute;inset:0;width:100%;height:100%}
 .node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;width:150px}
 .node .num{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:32px;font-weight:700;background:#fff;border:5px solid var(--blue);box-shadow:0 6px 0 var(--blue2)}
@@ -146,7 +148,10 @@ const CAST={
  hebe:{name:'Hebe',kid:'Ruby',skin:'#d9a27a',hair:'#3a2216',style:'pigtails',dress:'#f48fb1',trim:'#fff1a8',crown:'flowers',prop:'cup',small:1},
  artemis:{name:'Artemis',kid:'Ligaia',skin:'#e9b98f',hair:'#1d1a2b',style:'pony',dress:'#7e6bd6',trim:'#dfe6f5',crown:'moon',prop:'bow'},
  aphrodite:{name:'Aphrodite',kid:'Nieka',skin:'#b97a52',hair:'#4a2a1a',style:'long',dress:'#3fb8c0',trim:'#ffc2d4',crown:'rose',prop:'shell'},
- zeus:{name:'Zeus',skin:'#e5b58d',hair:'#f1f1f1',style:'zeus',dress:'#3f7fd6',trim:'#f2c94c',crown:'laurel',prop:'bolt'}
+ zeus:{name:'Zeus',skin:'#e5b58d',hair:'#f1f1f1',style:'zeus',dress:'#3f7fd6',trim:'#f2c94c',crown:'laurel',prop:'bolt'},
+ poseidon:{name:'Poseidon',skin:'#c99068',hair:'#2f4f5e',style:'zeus',dress:'#1fa59a',trim:'#9fe3dc',crown:'shells',prop:'trident'},
+ athena:{name:'Athena',skin:'#f0c39c',hair:'#6b4226',style:'long',dress:'#e9e4d8',trim:'#d4a72c',crown:'helmet',prop:'owl'},
+ boreas:{name:'Boreas',skin:'#cfe3f2',hair:'#ffffff',style:'zeus',dress:'#7fb3dd',trim:'#e8f4fb',crown:'icicles',prop:'snow'}
 };
 const P=(w,t)=>({w,t});
 const LEVELS=[
@@ -207,14 +212,79 @@ const LEVELS=[
   mid:[P(['hebe'],'Hebe put her shoe on her head. “Now I am odd too!” she said.')],
   end:[P(['demeter','aphrodite'],'The gate swung open. The last seeds were inside!')],
   items:['👟|shoe|show|sho','👁️|eye|ey|iye','✌️|two|tow|too','The bird flew up _ in the sky.|high|hi|hig','👭|friend|frend|freind','😂|laugh|laff|lag','Zeus ate the _ cake!|whole|hole|hol','Hebe _ at the silly joke.|laughed|laughing|lunched','🤧|sneezed|sneaked|squeezed','🦘|jumped|jumpy|dumped','👋|waved|waded|waxed','Lots of _ came to the feast.|people|purple|pebble','Let’s _ up the hill.|walk|wake|wall','How _ cakes did Zeus eat?|many|money|mane']},
- {id:'feast',name:'The Big Feast',short:'The Feast',host:'zeus',ptype:'mix',skill:'Mixed review',bg:'linear-gradient(#fff3c4,#f7c95c)',
+ {id:'feast',boss:1,name:'The Big Feast',short:'The Feast',host:'zeus',ptype:'mix',skill:'Mixed review',bg:'linear-gradient(#fff3c4,#f7c95c)',
   intro:[P(['demeter'],'Demeter planted all the seeds. “Let’s Grow!” she said. Up came wheat, grapes, beans, and corn!'),
    P(['demeter','hebe','artemis','aphrodite'],'Now it is time for the feast. Help get the food on the table!')],
   mid:[P(['zeus','hebe'],'Zeus came in with a big cake. “Who wants cake?” he asked. “Me!” said Hebe.')],
   end:[P(['demeter','hebe','artemis','aphrodite'],'The gods ate and ate. The dumpling pets danced on the table.'),
    P(['zeus','demeter'],'“Thank you, Demeter!” said Zeus. “You saved the feast!”')],
+  items:[]},
+ {id:'snow',name:'The Snowy Path',short:'Snowy Path',host:'artemis',ptype:'spell',skill:'Long i: i_e, igh, y, ie',bg:'linear-gradient(#eef6ff,#c9def5)',
+  intro:[P(['zeus'],'After the feast, the sky got gray. Then snow began to fall on Mount Olympus!'),
+   P(['demeter','hebe'],'“Brr! My garden will freeze!” said Demeter. “Who made it snow?”'),
+   P(['artemis'],'“It is Boreas, the North Wind,” said Artemis. “He lives in an ice palace far away.”'),
+   P(['hebe','demeter'],'“Let’s go find him!” said Hebe. “I will bring my steam basket. More dumpling pets!”')],
+  mid:[P(['hebe'],'Hebe slid down a hill on her tummy. “Look! I am a snow sled!”')],
+  end:[P(['artemis','demeter'],'Far away, they could see a bright light. “That is the way to the ice palace,” said Artemis.')],
+  items:['🪁|kite|kight|kyte','🌙|night|nite|nyte','💡|light|lite|lyte','🥧|pie|py|pigh','👔|tie|ty|tigh','🚲|bike|byke|bighk','5️⃣|five|fyve|fiv','9️⃣|nine|nyne|nin','😢|cry|crie|crigh','😊|smile|smyle|smil','🕷️|spider|spyder|spighder','🦁|lion|lyon|lien','⏰|time|tyme|tim']},
+ {id:'icebeach',name:'Poseidon’s Frozen Beach',short:'Frozen Beach',host:'poseidon',ptype:'spell',skill:'Long e: ee, ea, e_e, y, ey',bg:'linear-gradient(#dff4fb,#a9d8ea)',
+  intro:[P(['poseidon'],'At the beach, they met Poseidon, the god of the sea. His sea was all ice!'),
+   P(['poseidon','demeter'],'“Boreas froze my sea,” said Poseidon. “My fish can’t swim!” “We will help,” said Demeter.')],
+  mid:[P(['hebe'],'Hebe tried to skate on the ice. She spun and spun. “Wheee!”')],
+  end:[P(['poseidon','hebe'],'Poseidon tapped the ice with his big sea fork. Crack! A path opened up in the sea.')],
+  items:['🐝|bee|bea|be','🌳|tree|trea|tre','🍃|leaf|leef|lef','🏖️|beach|beech|bech','👣|feet|feat|fet','🍑|peach|peech|pech','🐑|sheep|sheap|shep','🔑|key|kee|kea','🧀|cheese|cheaze|chese','😴|sleep|sleap|slep','🦷|teeth|teath|tethe','🍖|meat|meet|met','👸|queen|quean|quen','🦅|eagle|eegle|egle','🐕|puppy|puppee|puppie']},
+ {id:'moonpool',name:'The Moon Pool',short:'Moon Pool',host:'artemis',ptype:'spell',skill:'oo, ew, ue, u_e',bg:'linear-gradient(#2f3d78,#6b7fc0)',
+  intro:[P(['artemis'],'That night, the moon was big and bright. Its light fell on a frozen pool.'),
+   P(['artemis','hebe'],'“The moon can show us the way,” said Artemis. “Look into the pool!”')],
+  mid:[P(['hebe'],'Hebe put a spoon on her nose. “Look! I can do a trick!”')],
+  end:[P(['artemis','demeter'],'In the pool, they saw a map. The ice palace was far to the north.')],
+  items:['🌕|moon|mune|mewn','🥄|spoon|spune|spewn','👢|boot|bute|bewt','🍲|stew|stue|stoo','🔵|blue|blew|bloo','📰|news|nuse|nooz','🏫|school|skool|scule','🧹|broom|brume|brewm','📚|book|buke|bewk','🍪|cookie|cooky|kookie','🐓|rooster|ruster|rewster','🎈|balloon|balune|balloun','🦄|unicorn|younicorn|unecorn']},
+ {id:'library',name:'Athena’s Owl Library',short:'Owl Library',host:'athena',ptype:'spell',skill:'er, ir, ur',bg:'linear-gradient(#f6efe0,#e2cfa6)',
+  intro:[P(['athena'],'On the way, they stopped at Athena’s library. Athena is very smart. Her pet owl sat on her arm.'),
+   P(['athena','demeter'],'“To get past the North Wind, you must read the old words,” said Athena.')],
+  mid:[P(['hebe'],'Hebe hid behind a big book. “Hoo! Hoo! I am the owl now!” she said.')],
+  end:[P(['athena','demeter'],'“You read every word!” said Athena. “Now you are ready for the next part of the trip.”')],
+  items:['👧|girl|gurl|gerl','👕|shirt|shurt|shert','🐢|turtle|tirtle|tertle','🍔|burger|birger|berger','🦃|turkey|tirkey|terkey','👩‍⚕️|nurse|nirse|nerse','👛|purse|pirse|perse','⛪|church|chirch|cherch','🥇|first|furst|ferst','🧈|butter|buttir|buttur','🐯|tiger|tigur|tigir','✉️|letter|lettir|lettur','🏄|surf|sirf|serf']},
+ {id:'barn',name:'The Sky Barn',short:'Sky Barn',host:'zeus',ptype:'spell',skill:'ar, or, ore',bg:'linear-gradient(#cfe0ff,#9fb8ef)',
+  intro:[P(['zeus'],'“The ice palace is too far to walk,” said Zeus. “Take my sky horse, Pegasus!”'),
+   P(['zeus','hebe'],'Pegasus had big white wings. He lived in a barn up by the stars.')],
+  mid:[P(['hebe'],'Pegasus gave Hebe a big lick. “Horse kisses! Yuck!” she said.')],
+  end:[P(['demeter','hebe'],'They all got on Pegasus. Up, up, up into the storm they went!')],
+  items:['⭐|star|stor|stahr','🚗|car|cor|kar','🦈|shark|shork|sharc','🌽|corn|carn|korn','🐴|horse|harse|hors','🍴|fork|fark|forc','🃏|card|cord|kard','🏪|store|stor|stoar','⛈️|storm|starm|storme','💪|arm|orm|arme','🛒|cart|cort|kart','🚜|tractor|tracter|tractar']},
+ {id:'cliff',name:'The Windy Cliff',short:'Windy Cliff',host:'aphrodite',ptype:'spell',skill:'aw, au, al',bg:'linear-gradient(#e7eef7,#b8c8de)',
+  intro:[P(['aphrodite'],'Pegasus landed on a tall cliff. The wind was so strong!'),
+   P(['aphrodite','demeter'],'“Hold on tight!” said Aphrodite. “Do not fall!”')],
+  mid:[P(['hebe'],'The wind blew Hebe’s hat away. A big bird got it and gave it back!')],
+  end:[P(['aphrodite','demeter'],'From the top of the cliff, they could see the ice palace. It was big and blue.')],
+  items:['🐾|paw|pau|po','✏️|draw|drau|dro','🥤|straw|strau|stro','🍂|fall|fawl|faul','⚽|ball|bawl|baul','🧱|wall|wawl|waul','🗣️|talk|tawk|tauk','🌄|dawn|daun|don','🥱|yawn|yaun|yon','🧂|salt|sawlt|sault','🍝|sauce|sawce|soss','🦀|claw|clau|clo']},
+ {id:'cloudtown',name:'Cloud Town',short:'Cloud Town',host:'hebe',ptype:'spell',skill:'ou, ow, oi, oy',bg:'linear-gradient(#f4f7fb,#cdd8e8)',
+  intro:[P(['hebe'],'Under the palace was a town made of clouds. The cloud people were cold and sad.'),
+   P(['hebe','demeter'],'“Boreas blows and blows,” said a little cloud boy. “Now we have no sun.”')],
+  mid:[P(['hebe'],'Hebe sat on a cloud. It was soft, like a pillow. “Can I take this one home?”')],
+  end:[P(['hebe','demeter'],'The cloud boy gave Hebe a little toy. “Good luck!” he said.')],
+  items:['🐄|cow|cou|caw','🦉|owl|oul|aul','🏡|house|howse|hous','🐁|mouse|mowse|mous','☁️|cloud|clowd|claud','👑|crown|croun|crawn','🤡|clown|cloun|clawn','👄|mouth|mowth|mouf','🌸|flower|flouer|flawer','🧸|toy|toi|tow','👦|boy|boi|bow','🛢️|oil|oyl|owl','🔊|noise|noyse|nois','👉|point|poynt|pownt','🦪|oyster|oister|ouster']},
+ {id:'rink',name:'The Ice Rink',short:'Ice Rink',host:'poseidon',ptype:'spell',skill:'Adding -ing (double it, drop the e)',bg:'linear-gradient(#e6f7ff,#b3e0f5)',
+  intro:[P(['poseidon'],'The way into the palace was an ice rink! Snowflakes were spinning and skating on it.'),
+   P(['poseidon','demeter'],'“To get in, we must cross the rink,” said Poseidon.')],
+  mid:[P(['hebe'],'Hebe was hopping on the ice. Then she was sitting on the ice! “Oops!” she said.')],
+  end:[P(['poseidon','hebe'],'They made it across the rink. A big ice door stood in front of them.')],
+  items:['🏊|swimming|swiming|swimmming','🏃|running|runing|runnning','✂️|cutting|cuting|cutteing','🚴|riding|ridding|rideing','💃|dancing|danceing|dansing','🧗|climbing|climing|climbbing','🐸|hopping|hoping|hopeing','🍳|cooking|cookking|cokeing','👏|clapping|claping|clapeing','🛷|sledding|sleding|sleddding','⛸️|skating|skateing|skatting','📖|reading|readding|reding','🤸|flipping|fliping|flipeing']},
+ {id:'door',name:'The Frosty Door',short:'Frosty Door',host:'athena',ptype:'sent',skill:'Contractions (it’s, can’t, they’re...)',bg:'linear-gradient(#eaf3fb,#bcd3ea)',
+  intro:[P(['athena'],'The ice door had words on it. Some words had a little mark in them.'),
+   P(['athena','demeter'],'“These are short words,” said Athena. “Look for the little mark. Then the door will open.”')],
+  mid:[P(['hebe'],'Hebe drew a silly face on the frosty door. The face looked just like Zeus!')],
+  end:[P(['demeter','athena'],'The door swung open. Inside sat Boreas, all alone.')],
+  items:['_ so cold outside!|It’s|Its|Its’','I _ find my mitten.|can’t|cant|ca’nt','Please _ run on the ice.|don’t|dont|do’nt','_ going to the ice palace.|We’re|Were|Wer’e','_ my best friend!|You’re|Your|Youre','_ go sledding!|Let’s|Lets|Le’ts','Hebe _ like the cold.|didn’t|didnt|did’nt','The ice _ thick yet.|isn’t|isnt|is’nt','Ask Athena. _ very smart.|She’s|Shes|Sh’es','_ so hungry!|I’m|Im|I’am','Look! _ coming this way!|They’re|Their|There','Boreas _ stop blowing.|won’t|wont|wo’nt','We _ see the sun.|couldn’t|couldnt|could’nt','The owl lost _ feather.|its|it’s|its’']},
+ {id:'palace',boss:1,name:'Boreas’s Ice Palace',short:'Ice Palace',host:'boreas',ptype:'mix',skill:'World 2 review',bg:'linear-gradient(#e8f4ff,#9ccbf0)',
+  intro:[P(['boreas'],'Boreas looked sad. “Nobody comes to see me,” he said. “So I blow and blow.”'),
+   P(['demeter','boreas'],'“You can be our friend!” said Demeter. “Come to the next feast with us!”')],
+  mid:[P(['hebe','boreas'],'Hebe gave Boreas a big hug. His cold cheeks got pink.')],
+  end:[P(['boreas','demeter'],'Boreas smiled. The snow stopped, and the sun came out.'),
+   P(['demeter','hebe','artemis','aphrodite'],'Spring came back to Mount Olympus. And now Boreas comes to every feast!')],
   items:[]}
+
 ];
+LEVELS.forEach((L,i)=>{L.world=i<10?1:2;L.pet=i<10?i:16+(i-10)});
 const PETS=[
  ['Bao','bao','#fbf6ec','','Bao likes to nap in the warm steam.'],
  ['Pip','gyoza','#f3d29b','wheat','Pip is a crispy little dumpling. Crunch!'],
@@ -231,7 +301,20 @@ const PETS=[
  ['Honey','gyoza','#ffe48f','heart','Honey is sweet and a bit sticky.'],
  ['Dash','wonton','#ffdcb8','bolt','Dash has a zap, just like Zeus!'],
  ['Peach','bao','#ffc6b3','leaf','Peach has a little green leaf on top.'],
- ['Gus','xlb','#d3edb9','laurel','Gus likes to hum a soft tune.']
+ ['Gus','xlb','#d3edb9','laurel','Gus likes to hum a soft tune.'],
+ ['Frost','ball','#f4f8fc','snowflake','Frost loves to roll in the snow.'],
+ ['Cocoa','bao','#d9b48c','scarf','Cocoa has a warm red scarf.'],
+ ['Button','xlb','#ffd6e0','earmuffs','Button wears fluffy earmuffs.'],
+ ['Ginger','gyoza','#ffcf99','hat','Ginger has a cozy hat with a pom-pom.'],
+ ['Poppy','momo','#ffb8c6','flower','Poppy likes to dance on the table.'],
+ ['Pepper','wonton','#e9e2d6','star','Pepper is a little bit spicy!'],
+ ['Twinkle','ball','#fff0a0','star','Twinkle shines at night.'],
+ ['Bubbles','ball','#cfe8fb','','Bubbles likes to splash in the soup.'],
+ ['Pumpkin','bao','#ffc58a','leaf','Pumpkin is round and sweet.'],
+ ['Rosie','momo','#ffc9d9','heart','Rosie gives the best hugs.'],
+ ['Sprout','gyoza','#cdeab4','leaf','Sprout grew in Demeter’s garden.'],
+ ['Tiny','ball','#ffd9ec','bow','Tiny is the smallest dumpling of all!']
+
 ].map(([n,s,c,a,b],id)=>({id,n,s,c,a,b}));
 const PROMPT={spell:'Which one is spelled right?',pic:'Which word matches the picture?',sent:'Which word fits?',chunk:'Read the chunks. Which word is it?'};
 const PRAISE=['Yes! You read every letter.','Smooth reading!','You got it!','Super eyes!','That’s it!','Let’s Grow!','Great looking!','You checked it. Yes!'];
@@ -250,13 +333,19 @@ function goddess(id){
  if(c.crown==='laurel')crown=ring(8,28,-170,-10,(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="3" ry="6.5" fill="#6aa84f" transform="rotate(${+r+30} ${x} ${y})"/>`);
  if(c.crown==='flowers')crown=ring(5,28,-155,-25,(x,y)=>`<circle cx="${x}" cy="${y}" r="5" fill="#ff8fb8"/><circle cx="${x}" cy="${y}" r="2" fill="#ffe066"/>`);
  if(c.crown==='moon')crown=`<path d="M38 30Q60 16 82 30" stroke="#c9d3e6" stroke-width="3.5" fill="none"/><path d="M55 10A10 10 0 1 0 68 25A8 8 0 1 1 55 10Z" fill="#eef3fb" stroke="#aeb9d1" stroke-width="1.5"/>`;
+ if(c.crown==='helmet')crown=`<path d="M31 46Q32 15 60 15Q88 15 89 46Q77 30 60 31Q43 30 31 46Z" fill="#c9ced8" stroke="#8d95a5" stroke-width="1.5"/><path d="M58 16Q64 0 84 6Q72 9 66 20Z" fill="#e8496f"/>`;
+ if(c.crown==='shells')crown=ring(5,28,-160,-20,(x,y)=>`<path d="M${x-5} ${y+3}Q${x} ${y-7} ${+x+5} ${y+3}Z" fill="#ffd7c2" stroke="#e8a58a"/>`);
+ if(c.crown==='icicles')crown=[40,50,60,70,80].map((x,i)=>`<path d="M${x-4} 24L${x} ${36+(i%2)*6}L${x+4} 24Z" fill="#e8f7ff" stroke="#9cc9e6"/>`).join('');
  if(c.crown==='rose')crown=`<path d="M30 40l-7 6 9 1z" fill="#5fae4e"/><circle cx="35" cy="36" r="7.5" fill="#e8496f"/><path d="M31 36q4-5 8 0q-4 4-6 0" stroke="#a8234a" stroke-width="1.5" fill="none"/>`+[0,1,2,3,4].map(i=>`<circle cx="${46+i*7}" cy="${(24+Math.abs(i-2)*1.8).toFixed(1)}" r="2.4" fill="#fff" stroke="#e7dccb" stroke-width=".8"/>`).join('');
  const props={
   wheat:`<path d="M96 146L102 70" stroke="#c9a227" stroke-width="3" stroke-linecap="round"/>`+[0,1,2,3,4].map(i=>{const x=101-i*.6+(i%2?-5:5),y=74+i*8;return `<ellipse cx="${x}" cy="${y}" rx="3" ry="6" fill="#e9b937" transform="rotate(${i%2?-30:30} ${x} ${y})"/>`}).join(''),
   cup:`<path d="M84 88h22q0 15-11 17q-11-2-11-17z" fill="#f2c94c" stroke="#c99a1e" stroke-width="1.5"/><rect x="93" y="104" width="4" height="10" fill="#e0b23a"/><rect x="88" y="113" width="14" height="4" rx="2" fill="#e0b23a"/>`,
   bow:`<path d="M98 66Q122 106 98 146" stroke="#8a5a3b" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M98 66L98 146" stroke="#d9d4cc" stroke-width="1.5"/>`,
   shell:`<path d="M84 110Q96 80 112 110Q98 118 84 110Z" fill="#ffb3c7" stroke="#e8879f" stroke-width="1.5"/><path d="M98 86L90 110M98 86L98 113M98 86L106 110" stroke="#e8879f" stroke-width="1.3"/>`,
-  bolt:`<path d="M100 62L86 98H97L90 132L112 88H100L108 62Z" fill="#ffd43b" stroke="#e0a800" stroke-width="1.5"/>`};
+  bolt:`<path d="M100 62L86 98H97L90 132L112 88H100L108 62Z" fill="#ffd43b" stroke="#e0a800" stroke-width="1.5"/>`,
+  trident:`<path d="M100 152V62M91 64V50M100 64V44M109 64V50M91 64H109" stroke="#e0b23a" stroke-width="3.5" fill="none" stroke-linecap="round"/>`,
+  owl:`<ellipse cx="100" cy="92" rx="11" ry="13" fill="#9a6b45"/><path d="M90 82l3-8 5 6M110 82l-3-8-5 6" fill="#9a6b45"/><circle cx="95.5" cy="89" r="4.5" fill="#fff"/><circle cx="104.5" cy="89" r="4.5" fill="#fff"/><circle cx="95.5" cy="89" r="2" fill="#2b1d16"/><circle cx="104.5" cy="89" r="2" fill="#2b1d16"/><path d="M98 94l2 3 2-3z" fill="#f2b631"/>`,
+  snow:`<g stroke="#9cc9e6" stroke-width="3" stroke-linecap="round"><path d="M100 76V108M86 84L114 100M86 100L114 84"/></g><circle cx="100" cy="92" r="4" fill="#fff"/>`};
  const zeus=c.style==='zeus';
  const beard=zeus?`<path d="M36 56Q38 96 60 100Q82 96 84 56Q74 70 60 70Q46 70 36 56Z" fill="${H}"/><path d="M50 66Q55 62 60 66Q65 62 70 66" stroke="#d6d6d6" stroke-width="3" fill="none" stroke-linecap="round"/>`:`<path d="M53 63Q60 69.5 67 63" stroke="#7a3b2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
  const body=`<ellipse cx="60" cy="164" rx="36" ry="5" fill="#000" opacity=".12"/>${back}
@@ -279,8 +368,9 @@ function pet(p,cls=''){
   gyoza:`<path d="M10 76Q28 28 60 26Q92 28 110 76Q60 98 10 76Z"/>`+[30,45,60,75,90].map(x=>`<path d="M${x-6} ${(31+Math.abs(60-x)/4).toFixed(1)}q6-7 12 0" stroke="${d}" stroke-width="2.3" fill="none"/>`).join(''),
   xlb:`<path d="M20 78Q16 46 46 38Q54 28 60 18Q66 28 74 38Q104 46 100 78Q100 96 60 96Q20 96 20 78Z"/><path d="M60 20L42 46M60 20L52 44M60 20L68 44M60 20L78 46" stroke="${d}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
   momo:`<path d="M22 76Q24 42 60 22Q96 42 98 76Q98 94 60 94Q22 94 22 76Z"/><path d="M60 22q-6 8-2 14M60 22q6 8 2 14" stroke="${d}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
-  wonton:`<path d="M32 64L6 46L12 80Z M88 64L114 46L108 80Z"/><ellipse cx="60" cy="70" rx="35" ry="26"/><path d="M42 50Q60 30 78 50" stroke="${d}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`};
- const top={bao:0,gyoza:0,xlb:-10,momo:-6,wonton:14}[p.s], fy={bao:66,gyoza:66,xlb:70,momo:68,wonton:70}[p.s];
+  wonton:`<path d="M32 64L6 46L12 80Z M88 64L114 46L108 80Z"/><ellipse cx="60" cy="70" rx="35" ry="26"/><path d="M42 50Q60 30 78 50" stroke="${d}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+  ball:`<circle cx="60" cy="62" r="34"/><ellipse cx="48" cy="46" rx="9" ry="5" fill="#fff" stroke="none" opacity=".6"/>`};
+ const top={bao:0,gyoza:0,xlb:-10,momo:-6,wonton:14,ball:0}[p.s], fy={bao:66,gyoza:66,xlb:70,momo:68,wonton:70,ball:66}[p.s];
  const A={
   star:`<polygon points="${star(60,16,12,5)}" fill="#ffd43b" stroke="#e0a800" stroke-width="1.2"/>`,
   crown:`<path d="M44 30L46 12L54 22L60 8L66 22L74 12L76 30Z" fill="#f2c94c" stroke="#c99a1e" stroke-width="1.5"/>`,
@@ -293,10 +383,15 @@ function pet(p,cls=''){
   sun:`<circle cx="60" cy="16" r="8" fill="#ffd43b"/>`+[0,45,90,135,180,225,270,315].map(a=>{const r=a*Math.PI/180;return `<path d="M${(60+11*Math.cos(r)).toFixed(1)} ${(16+11*Math.sin(r)).toFixed(1)}L${(60+15*Math.cos(r)).toFixed(1)} ${(16+15*Math.sin(r)).toFixed(1)}" stroke="#ffb300" stroke-width="2.5" stroke-linecap="round"/>`}).join(''),
   leaf:`<path d="M60 30Q58 12 76 8Q78 26 60 30Z" fill="#5fae4e"/><path d="M60 30Q66 20 74 11" stroke="#3f7d32" stroke-width="1.5" fill="none"/>`,
   bolt:`<path d="M64 0L52 18H61L56 32L74 12H64L70 0Z" fill="#ffd43b" stroke="#e0a800" stroke-width="1.3"/>`,
-  wings:''};
+  wings:'',
+  snowflake:`<g stroke="#7fb8e0" stroke-width="2.5" stroke-linecap="round"><path d="M60 4V28M50 10L70 22M50 22L70 10"/></g>`,
+  hat:`<path d="M40 32Q42 8 60 8Q78 8 80 32Z" fill="#e8496f"/><rect x="38" y="27" width="44" height="8" rx="4" fill="#fff"/><circle cx="60" cy="6" r="6" fill="#fff"/>`,
+  earmuffs:`<path d="M26 56Q26 18 60 18Q94 18 94 56" stroke="#7e6bd6" stroke-width="4" fill="none"/><circle cx="24" cy="58" r="9" fill="#d9cdf7" stroke="#7e6bd6" stroke-width="2"/><circle cx="96" cy="58" r="9" fill="#d9cdf7" stroke="#7e6bd6" stroke-width="2"/>`,
+  scarf:''};
  const wings=p.a==='wings'?`<ellipse cx="14" cy="48" rx="15" ry="9" fill="#fff" stroke="#cfd6e4" stroke-width="2" transform="rotate(-25 14 48)"/><ellipse cx="106" cy="48" rx="15" ry="9" fill="#fff" stroke="#cfd6e4" stroke-width="2" transform="rotate(25 106 48)"/>`:'';
+ const scarf=p.a==='scarf'?`<path d="M26 82Q60 96 94 82L96 90Q60 104 24 90Z" fill="#e53935"/><path d="M76 90L84 108L74 108L70 92Z" fill="#c62828"/>`:'';
  const face=`<ellipse cx="48" cy="${fy}" rx="4" ry="5" fill="#2b1d16"/><circle cx="49.4" cy="${fy-2}" r="1.5" fill="#fff"/><ellipse cx="72" cy="${fy}" rx="4" ry="5" fill="#2b1d16"/><circle cx="73.4" cy="${fy-2}" r="1.5" fill="#fff"/><ellipse cx="39" cy="${fy+7}" rx="5.5" ry="3.2" fill="#ff7f99" opacity=".5"/><ellipse cx="81" cy="${fy+7}" rx="5.5" ry="3.2" fill="#ff7f99" opacity=".5"/><path d="M54 ${fy+6}q3 4 6 0q3 4 6 0" stroke="#7a3b2a" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
- return `<svg class="${cls}" viewBox="0 -14 120 118" role="img" aria-label="${p.n}"><ellipse cx="60" cy="98" rx="40" ry="5" fill="#000" opacity=".12"/>${wings}<g fill="${c}" stroke="${d}" stroke-width="2">${S[p.s]}</g>${face}<g transform="translate(0 ${top})">${A[p.a]||''}</g></svg>`;
+ return `<svg class="${cls}" viewBox="0 -14 120 118" role="img" aria-label="${p.n}"><ellipse cx="60" cy="98" rx="40" ry="5" fill="#000" opacity=".12"/>${wings}<g fill="${c}" stroke="${d}" stroke-width="2">${S[p.s]}</g>${face}${scarf}<g transform="translate(0 ${top})">${A[p.a]||''}</g></svg>`;
 }
 const STEAMER=`<svg class="steamer" viewBox="0 0 200 150"><path d="M24 62h152v56q-76 22-152 0z" fill="#d9a35f" stroke="#a8702e" stroke-width="3"/><path d="M24 80q76 14 152 0M24 98q76 14 152 0" stroke="#b9823e" stroke-width="3" fill="none"/><g class="lid"><path d="M22 58v-10q78-28 156 0v10q-78 14-156 0z" fill="#e2b06a" stroke="#a8702e" stroke-width="3"/><rect x="88" y="26" width="24" height="10" rx="5" fill="#a8702e"/></g></svg>`;
 
@@ -350,8 +445,9 @@ function parse(s,L){const [a,b,c,d]=s.split('|');return {kind:a.includes('_')?'s
 function weight(it){const s=D.words[it.word];let w=1;if(!s)w+=1.5;else{if(s.miss>0&&s.streak<2)w+=3;if(s.streak>=3)w*=.4}return w}
 function wsample(arr,n){const pool=arr.slice(),out=[];while(out.length<n&&pool.length){const tot=pool.reduce((t,x)=>t+weight(x),0);let r=Math.random()*tot,i=0;for(;i<pool.length-1;i++){r-=weight(pool[i]);if(r<=0)break}out.push(pool.splice(i,1)[0])}return out}
 function buildItems(i){
- if(LEVELS[i].id!=='feast')return wsample(LEVELS[i].items.map(s=>parse(s,LEVELS[i])),10);
- const all=LEVELS.slice(0,-1).map(L=>L.items.map(s=>parse(s,L)));
+ const B=LEVELS[i];
+ if(!B.boss)return wsample(B.items.map(s=>parse(s,B)),10);
+ const all=LEVELS.filter(L=>L.world===B.world&&!L.boss).map(L=>L.items.map(s=>parse(s,L)));
  const chosen=all.map(a=>wsample(a,1)[0]);
  const rest=all.flat().filter(x=>!chosen.includes(x));
  return shuffle(chosen.concat(wsample(rest,3)));
@@ -366,22 +462,25 @@ function renderHome(){
  app.innerHTML=`<div class="home"><h1>Demeter’s Big Feast</h1><p class="sub">A Mount Olympus reading quest</p>
  <div class="castrow">${['demeter','hebe','artemis','aphrodite'].map(id=>`<figure>${goddess(id)}<figcaption><b>${CAST[id].kid}</b> is ${CAST[id].name}</figcaption></figure>`).join('')}</div>
  <div class="homebtns"><button class="big gold" data-act="map">Play ▶</button><button class="big" data-act="pets">My Dumpling Pets <span class="count">${D.pets.length}/${PETS.length}</span></button></div>
+ ${D.done.feast>0&&!(D.done.palace>0)?'<p class="sub"><b>New! World 2: Winter on Olympus ❄️</b></p>':''}
  ${profile==='test'?'<p><span class="testtag">Test profile</span></p>':''}
  <button class="gear" id="gear" data-act="gearhint">⚙ Grown-ups</button></div>`;
 }
 function renderMap(){
  setBg('linear-gradient(#bfe6ff,#e6f6ff)');
- const n=LEVELS.length,H=n*124+120,xs=[50,27,50,73,50,27,50,73,50,50];
- const pts=LEVELS.map((L,i)=>[xs[i],H-80-i*124]);
+ const n=LEVELS.length,H=n*124+250,xs=[50,27,50,73];
+ const pts=LEVELS.map((L,i)=>[L.boss?50:xs[i%10%4],H-130-i*124-(L.world===2?80:0)]);
+ const wy=H-130-9.5*124-40;
  const path='M'+pts.map(p=>p.join(' ')).join(' L');
  let now=-1;
  const nodes=LEVELS.map((L,i)=>{const done=D.done[L.id]>0,open=isOpen(i);if(open&&!done&&now<0)now=i;
-  return `<button class="node ${done?'done':''} ${open&&!done&&now===i?'now':''}" style="left:${pts[i][0]}%;top:${pts[i][1]}px" data-act="level" data-i="${i}" ${open?'':'disabled'} aria-label="${esc(L.name)}"><span class="num">${i===n-1?'🏛️':done?'✓':i+1}</span><span class="lbl">${esc(L.short)}</span></button>`}).join('');
+  return `<button class="node ${done?'done':''} ${open&&!done&&now===i?'now':''}" style="left:${pts[i][0]}%;top:${pts[i][1]}px" data-act="level" data-i="${i}" ${open?'':'disabled'} aria-label="${esc(L.name)}"><span class="num">${L.boss?(L.world===1?'🏛️':'❄️'):done?'✓':i+1}</span><span class="lbl">${esc(L.short)}</span></button>`}).join('');
  app.innerHTML=`<div class="bar"><button class="pill" data-act="home">⌂ Home</button><div class="pill title">Mount Olympus</div><button class="pill" data-act="pets">🥟 ${D.pets.length}</button></div>
  <div class="map" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
  <path d="M-20 ${H} L50 30 L120 ${H}Z" fill="#b9d3e6" opacity=".7"/><path d="M50 30 L40 ${150} L46 ${130} L50 ${160} L54 ${130} L60 ${150}Z" fill="#fff"/>
  <path d="${path}" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" opacity=".9"/>
- <path d="${path}" fill="none" stroke="#e9b937" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${nodes}</div>`;
+ <path d="${path}" fill="none" stroke="#e9b937" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+ <div class="world" style="top:${H-34}px">World 1 · The Big Feast</div><div class="world w2" style="top:${wy}px">World 2 · Winter on Olympus ❄️</div>${nodes}</div>`;
  const cur=app.querySelector('.node.now')||app.querySelectorAll('.node')[0];
  if(cur)setTimeout(()=>cur.scrollIntoView({block:'center',behavior:'smooth'}),60);
 }
@@ -439,7 +538,7 @@ function finishLevel(){
  D.sessions.unshift({d:new Date().toISOString(),lvl:L.id,n:r.base,first:r.firstBase,extra:r.q.length-r.base,mins:Math.round((Date.now()-r.t0)/6000)/10,missed:r.missed});
  D.sessions=D.sessions.slice(0,100);
  let prize;
- if(r.i<10&&!D.pets.includes(r.i))prize=r.i;else{const p=PETS.find(p=>!D.pets.includes(p.id));prize=p?p.id:null}
+ if(L.pet!=null&&!D.pets.includes(L.pet))prize=L.pet;else{const p=PETS.find(p=>!D.pets.includes(p.id));prize=p?p.id:null}
  if(prize===null)D.stars++;else D.pets.push(prize);
  save(true);
  renderStory(L.end,()=>renderPrize(prize),false);
@@ -475,7 +574,7 @@ function renderPin(){
  <p><button class="big" style="font-size:18px;min-height:48px" data-act="home">Cancel</button></p></div>`;
 }
 function stats(){
- const skills=LEVELS.slice(0,-1).map(L=>{let seen=0,first=0;L.items.forEach(s=>{const w=s.split('|')[1].replace(/·/g,''),st=D.words[w];if(st){seen+=st.seen;first+=st.first}});return {L,seen,first,plays:D.done[L.id]||0}});
+ const skills=LEVELS.filter(L=>!L.boss).map(L=>{let seen=0,first=0;L.items.forEach(s=>{const w=s.split('|')[1].replace(/·/g,''),st=D.words[w];if(st){seen+=st.seen;first+=st.first}});return {L,seen,first,plays:D.done[L.id]||0}});
  const watch=Object.entries(D.words).filter(([w,s])=>s.miss>0).sort((a,b)=>(b[1].miss-b[1].streak)-(a[1].miss-a[1].streak)||b[1].last-a[1].last).slice(0,24);
  return {skills,watch};
 }
@@ -494,7 +593,7 @@ function renderParent(){
  <h3>First-try reading by skill</h3>
  <table><thead><tr><th>Land</th><th>Skill</th><th class="n">Wins</th><th class="n">First try</th><th></th></tr></thead><tbody>
  ${skills.map(s=>{const pc=s.seen?Math.round(100*s.first/s.seen):null;return `<tr><td>${esc(s.L.short)}</td><td>${esc(s.L.skill)}</td><td class="n">${s.plays}</td><td class="n">${pc===null?'–':pc+'% <span class="muted">('+s.first+'/'+s.seen+')</span>'}</td><td><div class="bar2"><i style="width:${pc||0}%"></i></div></td></tr>`}).join('')}
- <tr><td>${esc(LEVELS[9].short)}</td><td>Mixed review</td><td class="n">${D.done.feast||0}</td><td></td><td></td></tr></tbody></table>
+ ${LEVELS.filter(L=>L.boss).map(L=>`<tr><td>${esc(L.short)}</td><td>${esc(L.skill)}</td><td class="n">${D.done[L.id]||0}</td><td></td><td></td></tr>`).join('')}</tbody></table>
  <h3>Words to watch</h3>
  ${watch.length?`<table><thead><tr><th>Word</th><th>Skill</th><th class="n">Missed</th><th class="n">Seen</th><th class="n">Right in a row now</th></tr></thead><tbody>${watch.map(([w,s])=>`<tr><td><b>${esc(w)}</b></td><td>${esc(s.s)}</td><td class="n">${s.miss}</td><td class="n">${s.seen}</td><td class="n">${s.streak}</td></tr>`).join('')}</tbody></table>`:'<p class="muted">No misses yet.</p>'}
  <p class="muted">A word she misses comes back later in the same land, and is picked more often next time until she gets it right twice in a row.</p>
