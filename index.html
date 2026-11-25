@@ -81,6 +81,8 @@ h1,h2{margin:0;line-height:1.08;text-wrap:balance}
 .blank{display:inline-block;min-width:3.4em;border-bottom:5px solid var(--blue);line-height:1.1;transition:background .3s}
 .blank.filled{background:var(--gold2);border-radius:10px 10px 0 0;padding:0 .15em}
 .again{display:inline-block;background:#e7f2ff;border-radius:999px;padding:2px 14px;font-size:18px;margin-bottom:4px}
+.again.bonus{background:var(--gold2)}
+.node.bonus .num{border-style:dashed;width:64px;height:64px;font-size:28px}
 .opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
 .opt{position:relative;font-weight:700;font-size:clamp(30px,5vw,48px);letter-spacing:.03em;min-height:96px;padding:6px;border-radius:24px;border:4px solid var(--blue);background:#fff;box-shadow:0 6px 0 var(--blue2);transition:opacity .3s,background .2s}
 .opt:active{transform:translateY(3px);box-shadow:0 3px 0 var(--blue2)}
@@ -286,10 +288,31 @@ const LEVELS=[
   mid:[P(['hebe','boreas'],'Hebe gave Boreas a big hug. His cold cheeks got pink.')],
   end:[P(['boreas','demeter'],'Boreas smiled. The snow stopped, and the sun came out.'),
    P(['demeter','hebe','artemis','aphrodite'],'Spring came back to Mount Olympus. And now Boreas comes to every feast!')],
-  items:[]}
+  items:[]},
+ {id:'snackstop',bonus:1,after:'icebeach',rounds:8,name:'Hebe’s Snack Stop',short:'Snack Stop',host:'hebe',ptype:'sent',skill:'Tricky Words: their/there/they’re, would/could/should, where/were',bg:'linear-gradient(#fff3e0,#ffd6a8)',pet:28,
+  intro:[P(['hebe'],'“Time for a snack!” said Hebe. She opened her steam basket. Out came hot cocoa and dumpling soup.'),
+   P(['hebe','demeter'],'“But first, read the words on the cups,” said Hebe. “They are the tricky ones!”')],
+  mid:[P(['hebe'],'Hebe drank her cocoa too fast. Now she has a cocoa mustache!')],
+  end:[P(['demeter','hebe'],'“Yum!” said Demeter. “Now we are warm. Let’s go!”')],
+  items:['The gods put on _ coats.|their|there|they’re','_ is snow on the hill.|There|Their|They’re','_ cold, so they need hats.|They’re|There|Their','Is _ a sled for me?|there|their|they’re','The kids lost _ mittens.|their|there|they’re','Look! _ making a snowman!|They’re|Their|There','I _ like hot cocoa, please.|would|wood|world','_ you help me find my hat?|Could|Cloud|Cold','You _ wear a coat in the snow.|should|shout|shed','Hebe _ like to make a snow cake.|would|wood|word','_ is my other boot?|Where|Were|Wear','The sleds _ by the door.|were|where|wear']},
+ {id:'owlpost',bonus:1,after:'barn',rounds:8,name:'Athena’s Owl Post',short:'Owl Post',host:'athena',ptype:'sent',skill:'Tricky Words: do/to/too/two, many, from, said, once, what/when',bg:'linear-gradient(#f3eee2,#dccba3)',pet:29,
+  intro:[P(['athena'],'An owl flew down with a letter from Athena. “Read it with care,” said the owl.'),
+   P(['athena','demeter'],'“Some words look the same, but they are not,” said Athena. “Look at every letter.”')],
+  mid:[P(['hebe'],'The owl sat on Hebe’s head. “Look! I am an owl tree!” said Hebe.')],
+  end:[P(['athena','demeter'],'“You read the whole letter!” said Athena. “Fly on, friends!”')],
+  items:['_ you like snow?|Do|To|Go','Pegasus flew _ the cloud.|to|two|too','Hebe wants to come _!|too|to|two','Pegasus has _ big wings.|two|too|to','How _ snowflakes can you catch?|many|money|mane','This hat is _ Zeus.|from|form|frog','“Brr!” _ Hebe.|said|sad|side','_ upon a time, it was cold.|Once|One|On','Hebe has _ red mitten.|one|once|own','_ do you have?|What|That|Wheat','_ will we get there?|When|Then|Hen','We _ going to the ice palace.|are|ate|ear']},
+ {id:'icebridge',bonus:1,after:'rink',rounds:8,name:'The Icicle Bridge',short:'Icicle Bridge',host:'aphrodite',ptype:'pic',skill:'Two-syllable chunks 2',bg:'linear-gradient(#eaf6ff,#b9dcf5)',pet:30,
+  intro:[P(['aphrodite'],'Another bridge! This one is made of ice. Each icicle has a long word on it.'),
+   P(['aphrodite','demeter'],'“Read each word in chunks,” said Aphrodite. “Chunk by chunk, step by step.”')],
+  mid:[P(['hebe'],'Hebe licked an icicle. “It tastes like a snow cone!” she said.')],
+  end:[P(['aphrodite','hebe'],'They crossed the Icicle Bridge. Not one of them slipped!')],
+  items:['🚽|toi·let|tab·let|tick·et','🧺|pic·nic|pic·kle|pock·et','🎃|pump·kin|nap·kin|pup·pet','⛄|snow·man|snow·ball|show·man','🐰|bun·ny|sun·ny|bon·ny','🐵|mon·key|mon·day|don·key','🍯|hon·ey|mon·ey|hob·by','🧇|waf·fle|wig·gle|baf·fle','🥨|pret·zel|pres·ent|pet·al','🎁|pres·ent|pret·zel|peas·ant','🍎|ap·ple|am·ple|ap·ply','🧁|cup·cake|pan·cake|pup·pet']}
 
 ];
-LEVELS.forEach((L,i)=>{L.world=i<10?1:2;L.pet=i<10?i:16+(i-10)});
+LEVELS.forEach((L,i)=>{L.world=i<10?1:2;if(L.pet==null)L.pet=i<10?i:16+(i-10)});
+/* play order on the map: bonus stops sit right after the land named in "after" */
+const PATH=[];LEVELS.forEach(L=>{if(!L.after)PATH.push(L.id)});LEVELS.forEach(L=>{if(L.after)PATH.splice(PATH.indexOf(L.after)+1,0,L.id)});
+const byId=id=>LEVELS.find(L=>L.id===id);
 const PETS=[
  ['Bao','bao','#fbf6ec','','Bao likes to nap in the warm steam.'],
  ['Pip','gyoza','#f3d29b','wheat','Pip is a crispy little dumpling. Crunch!'],
@@ -318,7 +341,10 @@ const PETS=[
  ['Pumpkin','bao','#ffc58a','leaf','Pumpkin is round and sweet.'],
  ['Rosie','momo','#ffc9d9','heart','Rosie gives the best hugs.'],
  ['Sprout','gyoza','#cdeab4','leaf','Sprout grew in Demeter’s garden.'],
- ['Tiny','ball','#ffd9ec','bow','Tiny is the smallest dumpling of all!']
+ ['Tiny','ball','#ffd9ec','bow','Tiny is the smallest dumpling of all!'],
+ ['Maple','momo','#e9b97e','star','Maple smells like a warm snack.'],
+ ['Pearl','xlb','#f7f3ff','crown','Pearl is shiny and small.'],
+ ['Clover','ball','#d4efc0','flower','Clover brings good luck.']
 
 ].map(([n,s,c,a,b],id)=>({id,n,s,c,a,b}));
 const PROMPT={spell:'Which one is spelled right?',pic:'Which word matches the picture?',sent:'Which word fits?',chunk:'Read the chunks. Which word is it?'};
@@ -449,15 +475,26 @@ let screen='home',run=null,story=null;
 function parse(s,L){const [a,b,c,d]=s.split('|');return {kind:a.includes('_')?'sent':b.includes('·')?'chunk':L.ptype,cue:a,ans:b,opts:[b,c,d],word:b.replace(/·/g,''),skill:L.skill,lvl:L.id}}
 function weight(it){const s=D.words[it.word];let w=1;if(!s)w+=1.5;else{if(s.miss>0&&s.streak<2)w+=3;if(s.streak>=3)w*=.4}return w}
 function wsample(arr,n){const pool=arr.slice(),out=[];while(out.length<n&&pool.length){const tot=pool.reduce((t,x)=>t+weight(x),0);let r=Math.random()*tot,i=0;for(;i<pool.length-1;i++){r-=weight(pool[i]);if(r<=0)break}out.push(pool.splice(i,1)[0])}return out}
+function focusPool(exclude){
+ const out=[];
+ LEVELS.forEach(L=>{if(L.boss)return;L.items.forEach(s=>{const it=parse(s,L);if(exclude.has(it.word))return;
+  const st=D.words[it.word];if(L.bonus||(st&&st.miss>0&&st.streak<2))out.push(it)})});
+ return out;
+}
 function buildItems(i){
  const B=LEVELS[i];
- if(!B.boss)return wsample(B.items.map(s=>parse(s,B)),10);
+ if(B.bonus)return wsample(B.items.map(s=>parse(s,B)),B.rounds||8);
+ if(!B.boss){const main=wsample(B.items.map(s=>parse(s,B)),10);
+  if(B.world!==2)return main;
+  const seeds=wsample(focusPool(new Set(main.map(x=>x.word))),2).map(x=>Object.assign({},x,{bonus:true}));
+  if(seeds[0])main.splice(3,0,seeds[0]);if(seeds[1])main.splice(8,0,seeds[1]);
+  return main}
  const all=LEVELS.filter(L=>L.world===B.world&&!L.boss).map(L=>L.items.map(s=>parse(s,L)));
  const chosen=all.map(a=>wsample(a,1)[0]);
  const rest=all.flat().filter(x=>!chosen.includes(x));
  return shuffle(chosen.concat(wsample(rest,3)));
 }
-const isOpen=i=>i===0||(D.done[LEVELS[i-1].id]>0)||(profile==='test'&&D.settings.all);
+const isOpen=i=>{const id=LEVELS[i].id,j=PATH.indexOf(id);return j===0||D.done[id]>0||D.done[PATH[j-1]]>0||(profile==='test'&&D.settings.all)};
 function refresh(){if(['home','map','pets'].includes(screen))show(screen)}
 function show(s){screen=s;window.scrollTo(0,0);({home:renderHome,map:renderMap,pets:renderPets,parent:renderParent,pin:renderPin}[s])()}
 
@@ -473,13 +510,13 @@ function renderHome(){
 }
 function renderMap(){
  setBg('linear-gradient(#bfe6ff,#e6f6ff)');
- const n=LEVELS.length,H=n*124+250,xs=[50,27,50,73];
- const pts=LEVELS.map((L,i)=>[L.boss?50:xs[i%10%4],H-130-i*124-(L.world===2?80:0)]);
+ const n=PATH.length,H=n*124+250,xs=[50,27,50,73];
+ const pos={};PATH.forEach((id,j)=>{const L=byId(id);pos[id]=[L.boss?50:xs[j%4],H-130-j*124-(L.world===2?80:0)]});
  const wy=H-130-9.5*124-40;
- const path='M'+pts.map(p=>p.join(' ')).join(' L');
+ const path='M'+PATH.map(id=>pos[id].join(' ')).join(' L');
  let now=-1;
- const nodes=LEVELS.map((L,i)=>{const done=D.done[L.id]>0,open=isOpen(i);if(open&&!done&&now<0)now=i;
-  return `<button class="node ${done?'done':''} ${open&&!done&&now===i?'now':''}" style="left:${pts[i][0]}%;top:${pts[i][1]}px" data-act="level" data-i="${i}" ${open?'':'disabled'} aria-label="${esc(L.name)}"><span class="num">${L.boss?(L.world===1?'🏛️':'❄️'):done?'✓':i+1}</span><span class="lbl">${esc(L.short)}</span></button>`}).join('');
+ const nodes=PATH.map(id=>{const i=LEVELS.findIndex(L=>L.id===id),L=LEVELS[i],pt=pos[id];const done=D.done[L.id]>0,open=isOpen(i);if(open&&!done&&now<0)now=i;
+  return `<button class="node ${done?'done':''} ${L.bonus?'bonus':''} ${open&&!done&&now===i?'now':''}" style="left:${pt[0]}%;top:${pt[1]}px" data-act="level" data-i="${i}" ${open?'':'disabled'} aria-label="${esc(L.name)}"><span class="num">${L.boss?(L.world===1?'🏛️':'❄️'):done?'✓':L.bonus?'⭐':PATH.indexOf(L.id)+1-PATH.slice(0,PATH.indexOf(L.id)).filter(x=>byId(x).bonus).length}</span><span class="lbl">${esc(L.short)}</span></button>`}).join('');
  app.innerHTML=`<div class="bar"><button class="pill" data-act="home">⌂ Home</button><div class="pill title">Mount Olympus</div><button class="pill" data-act="pets">🥟 ${D.pets.length}</button></div>
  <div class="map" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">
  <path d="M-20 ${H} L50 30 L120 ${H}Z" fill="#b9d3e6" opacity=".7"/><path d="M50 30 L40 ${150} L46 ${130} L50 ${160} L54 ${130} L60 ${150}Z" fill="#fff"/>
@@ -512,7 +549,7 @@ function renderRound(){
  const btns=shuffle(it.opts).map(o=>`<button class="opt" data-act="pick" data-w="${esc(o)}">${fmt(o)}</button>`).join('');
  app.innerHTML=`<div class="bar"><button class="pill" data-act="map">◀ Map</button><div class="pill title">${esc(L.name)}</div><div class="pill seeds" aria-label="${Math.min(r.k,r.base)} of ${r.base} seeds">${seeds}</div></div>
  <div class="play"><div class="side"><div class="bubble" id="bub">${r.k===0?'Look at every letter.':pickOne(NUDGE)}</div><div class="duo">${goddess('demeter')}${goddess(host)}</div></div>
- <div class="card">${r.k>=r.base?'<span class="again">One more look!</span>':''}<p class="prompt">${PROMPT[it.kind]}</p>${cue}<div class="opts">${btns}</div></div></div>`;
+ <div class="card">${r.k>=r.base?'<span class="again">One more look!</span>':it.bonus?'<span class="again bonus">⭐ Bonus seed</span>':''}<p class="prompt">${PROMPT[it.kind]}</p>${cue}<div class="opts">${btns}</div></div></div>`;
 }
 function bub(t){const b=document.getElementById('bub');if(b)b.textContent=t}
 function sparkle(el){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const r=el.getBoundingClientRect();
